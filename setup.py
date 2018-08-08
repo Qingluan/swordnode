@@ -11,6 +11,8 @@ E = os.path.exists
 SHOME = os.path.expanduser("~/.config/SwordNode")
 J = os.path.join
 
+if not E(SHOME):
+    os.mkdir(SHOME)
 class MyInstall(install):
     def run(self):
         install.run(self)
