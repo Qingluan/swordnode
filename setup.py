@@ -8,12 +8,16 @@ DB_PATH_C = os.path.expanduser("~/.config/")
 PLUGIN_PATH = os.path.join(DB_PATH, 'plugins')
 TEST_MODULES_ROOT = os.path.expanduser("~/.config/SwordNode/plugins/Plugins")
 E = os.path.exists
+SHOME = os.path.expanduser("~/.config/SwordNode")
+
 
 class MyInstall(install):
     def run(self):
         install.run(self)
 
         HandleDir = os.path.join(os.path.dirname(__file__), "handlers")
+        if not E(SHOME):
+            os.mkdir(SHOME)
 
 
         if not E(PLUGIN_PATH):
