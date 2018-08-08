@@ -9,7 +9,7 @@ PLUGIN_PATH = os.path.join(DB_PATH, 'plugins')
 TEST_MODULES_ROOT = os.path.expanduser("~/.config/SwordNode/plugins/Plugins")
 E = os.path.exists
 SHOME = os.path.expanduser("~/.config/SwordNode")
-
+J = os.path.join
 
 class MyInstall(install):
     def run(self):
