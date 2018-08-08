@@ -1,0 +1,2 @@
+recursive-include swordserver *
+recursive-include handlers *
