@@ -40,6 +40,8 @@ class MyInstall(install):
 
         os.popen("cd %s && git init " % TEST_MODULES_ROOT)
         os.popen("cd %s && git remote add origin https://github.com/Qingluan/x-plugins.git"  % TEST_MODULES_ROOT)
+        
+        os.popen("chmod +x %s && cp %s /usr/local/bin/x-neid-server " % ("startup.bash", "startup.bash"))
 
         for file in os.listdir("handlers"):
             if file.endswith(".raw"):
@@ -54,7 +56,7 @@ class MyInstall(install):
 
 
 setup(name='x-mroy-1052',
-    version='0.0.1',
+    version='0.0.2',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},
