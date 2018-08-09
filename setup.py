@@ -65,7 +65,7 @@ setup(name='x-mroy-1052',
     include_package_data=True,
     zip_safe=False,
     packages=find_packages(),
-    install_requires=[ 'mroylib-min','x-mroy-1045', 'qtornado'],
+    install_requires=[ 'mroylib-min','x-mroy-1045', 'qtornado', 'telethon'],
     entry_points={
         'console_scripts': ['x-neid=swordserver.main:main']
     },
