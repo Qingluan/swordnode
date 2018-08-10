@@ -24,6 +24,8 @@ class MyInstall(install):
         if not E(SHOME):
             os.mkdir(SHOME)
 
+        if not E(SHOME_SERVICES):
+            os.mkdir(SHOME_SERVICES)
 
         if not E(PLUGIN_PATH):
             os.mkdir(os.path.join(SHOME, 'plugins'))
