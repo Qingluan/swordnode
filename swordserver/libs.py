@@ -133,7 +133,7 @@ class R:
                     c = Cache(REPO_DB)
                     rs = c.query(Repo)
                     return json.dumps([r.get_dict() for r in rs])
-                else
+                else:
                     return """suport:
                     Was sagst du? %s 
                         curl http://xxxx -d module=self -d args=ls # ls all repo
