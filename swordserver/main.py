@@ -7,7 +7,11 @@ import tornado.ioloop
 from tornado.ioloop import IOLoop
 from .setting import  appication, port
 from qlib.io import GeneratorApi
-
+import os
+J = os.path.join
+HOME = os.path.expanduser("~/.config/SwordNode/")
+cak = J(HOME, 'ca.key')
+cac = J(HOME, 'ca.csr')
 
 def main():
     args = GeneratorApi({
@@ -15,9 +19,14 @@ def main():
         })
     if args.port:
         port = int(args.port)
-    appication.listen(port)
-    tornado.ioloop.IOLoop.instance().start()
 
+    http_server = tornado.httpserver.HTTPServer(application, ssl_options={
+        "certfile": cac,
+        "keyfile": cak,
+    })
+    http_server.listen(443)
+    tornado.ioloop.IOLoop.instance().start()
+    
 
 if __name__ == "__main__":
     main()
