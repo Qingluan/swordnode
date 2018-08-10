@@ -6,7 +6,16 @@ start() {
 }
 
 stop() {
-    ps aux | grep x-neid | grep -v grep | awk '{ print $2 }' | xargs kill -9;
+        pid="$(ps aux | grep x-neid | grep -v grep | grep -v x-neid-server | awk '{ print $2 }'  | xargs)"
+        if [[ $pid != "" ]];then
+                echo "$(ps aux | grep x-neid | grep -v grep | grep -v x-neid-server )"
+                echo "found pid : $pid"
+                kill -9 $pid;
+                echo "kill the x-neid"
+        else
+                echo "not start"
+        fi
+
 }
 
 
@@ -15,4 +24,3 @@ if [[ $1 == "start" ]];then
 else
     stop
 fi
-
