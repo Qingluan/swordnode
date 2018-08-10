@@ -142,6 +142,7 @@ class R:
                     return "repo set : name=%s url=%s path=%s " % (name, url, path)
                 elif len(wargs) == 2 and wargs[0] == 'use':
                     self.switch_repo(wargs[1].strip())
+                    return 'switch to : %s' % wargs[1]
                 elif wargs[0] == 'ls':
                     c = Cache(REPO_DB)
                     rs = c.query(Repo)
