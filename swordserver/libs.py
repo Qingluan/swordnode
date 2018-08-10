@@ -104,7 +104,7 @@ class R:
     def run(self, *args, **kargs):
         if self.name == 'self':
             if len(args) == 1:
-                wargs = args.split(",")
+                wargs = args[0].split(",")
                 if len(wargs) ==3:
                     name = ''
                     path = ''
@@ -138,8 +138,8 @@ class R:
                     Was sagst du? %s 
                         curl http://xxxx -d module=self -d args=ls # ls all repo
                         curl http://xxxx -d module=self -d args=help
-                        curl http://xxxx -d module=self -d args=name:url:path # set repo
-                        curl http://xxxx -d module=self -d args=use:origin  # switch repo
+                        curl http://xxxx -d module=self -d args=name,url,path # set repo
+                        curl http://xxxx -d module=self -d args=use,origin  # switch repo
                         curl http://xxxx -d module=self  # this will update use now repo
 
                     """ % wargs
