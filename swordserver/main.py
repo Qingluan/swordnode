@@ -20,7 +20,7 @@ def main():
     if args.port:
         port = int(args.port)
 
-    http_server = tornado.httpserver.HTTPServer(application, ssl_options={
+    http_server = tornado.httpserver.HTTPServer(appication, ssl_options={
         "certfile": cac,
         "keyfile": cak,
     })
