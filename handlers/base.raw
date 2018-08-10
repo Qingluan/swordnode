@@ -13,9 +13,9 @@ def run(cmd):
     if cmd == 'ls':
         res = os.popen('ls %s' % os.path.dirname(__file__)).read()
     elif cmd == 'update':
-        res = os.popen('cd %s && git add -A && git commit -m "123" && git pull origin master' % TEST_DIR).read()
+        res = os.popen('cd %s && git add -A && git commit -m "123" && git pull -f origin master --allow-unrelated-histories' % TEST_DIR).read()
     elif cmd == 'updateF':
-        res = os.popen('cd %s && git add -A && git commit -m "123" && git pull -f origin master' % TEST_DIR).read()
+        res = os.popen('cd %s && git add -A && git commit -m "123" && git pull -f origin master --allow-unrelated-histories' % TEST_DIR).read()
     elif cmd == 'upgrade':
         res = os.popen("pip3 install -U git+https://github.com/Qingluan/swordnode.git && sleep 1 && x-neid-server stop && x-neid-server start").read()
     elif cmd == 'ps':
