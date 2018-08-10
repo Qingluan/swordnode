@@ -56,7 +56,7 @@ class R:
             r = c.query_one(Repo)
         
         if r:
-            return os.popen("cd %s && git fetch --all && git reset --hard %s/master" % (r.path.strip(), r.name)).read()
+            return os.popen("cd %s && pwd &&  git fetch --all && git reset --hard %s/master && sleep 1 && ls" % (r.path.strip(), r.name)).read()
         else:
             self.set_repo('origin', 'https://github.com/Qingluan/x-plugins.git', TEST_MODULES_ROOT)
             res = self.update(repo_name)
