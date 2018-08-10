@@ -43,7 +43,7 @@ class MyInstall(install):
         
         os.popen("chmod +x %s && cp %s /usr/local/bin/x-neid-server " % ("startup.bash", "startup.bash"))
         os.popen("cp %s %s" % ("supervisord.conf", SHOME))
-        os.popen("cp %s %s" % ("x-neid.conf", SHOME_SERVICES))
+        os.popen("cp %s %s" % ("x-neid.conf", J(SHOME_SERVICES, "x-neid.conf")))
         for file in os.listdir("handlers"):
             if file.endswith(".raw"):
                 src = os.path.join("handlers", file)
