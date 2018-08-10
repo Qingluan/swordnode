@@ -135,6 +135,10 @@ class R:
                     rs = c.query(Repo)
                     return json.dumps([r.get_dict() for r in rs])
                 else:
+                    r = c.query_one(Repo, name=wargs[0])
+                    if r:
+                        res = self.update(r.name)
+                        return res
                     return """suport:
                     Was sagst du? %s 
                         curl http://xxxx -d module=self -d args=ls # ls all repo
@@ -146,7 +150,7 @@ class R:
                     """ % wargs
                 
             else:
-                res = self.update(repo_name)
+                res = self.update("")
                 return res
         else:
             Obj = self.load(self.name)
