@@ -1,23 +1,28 @@
 #!/bin/bash
 
+if [ !  -d /var/log/supervisord ];then
+    mkdir /var/log/supervisord
+fi
+
+
+if [ ! "$(which supervisord)" ];then
+    echo "install supervisord ..."
+    pip3 install -U git+https://github.com/Supervisor/supervisor.git 1>/dev/null 2>/dev/null;
+    echo -n " ok"
+fi
+
 start() {
-    x-neid -p 60009 &
-    echo "Sever start"
+    supervisord -c ~/.config/SwordNode/supervisord.conf
+    echo "Start Server "
 }
 
 stop() {
-        pid="$(ps aux | grep x-neid | grep -v grep | grep -v x-neid-server | awk '{ print $2 }'  | xargs)"
-        if [[ $pid != "" ]];then
-                echo "$(ps aux | grep x-neid | grep -v grep | grep -v x-neid-server )"
-                echo "found pid : $pid"
-                kill -9 $pid;
-                echo "kill the x-neid"
-        else
-                echo "not start"
-        fi
-
+    supervisorctl stop x-neid
 }
 
+restart() {
+    supervisorctl restart x-neid   
+}
 
 if [[ $1 == "start" ]];then
     start
