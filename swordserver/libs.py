@@ -85,6 +85,18 @@ class R:
             return mname
 
 
+    def cat(self, file):
+        c = Cache(REPO_DB)
+        r = c.query_one(Repo, name=self.use_repo())
+        if r:
+            files = os.listdir(r.path)
+            for f in fils:
+                if file in f:
+                    with open(os.path.join(r.path, f)) as fp:
+                        return fp.read()
+            return "no file: %s" % file
+        return "no current repo"
+
 
     def load(self, name):
         mname = self.use_repo()
@@ -134,6 +146,9 @@ class R:
                     c = Cache(REPO_DB)
                     rs = c.query(Repo)
                     return json.dumps([r.get_dict() for r in rs])
+                elif len(wargs) ==2 and wargs[0] == 'cat':
+                    
+                    return self.cat(wargs[1])
                 else:
                     c = Cache(REPO_DB)
                     r = c.query_one(Repo, name=wargs[0])
