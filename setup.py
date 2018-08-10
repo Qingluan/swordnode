@@ -11,7 +11,7 @@ E = os.path.exists
 BHOME = os.path.expanduser("~/.config")
 SHOME = os.path.expanduser("~/.config/SwordNode")
 J = os.path.join
-
+SHOME_SERVICES = J(SHOME, 'services')
 
 class MyInstall(install):
     def run(self):
@@ -43,6 +43,7 @@ class MyInstall(install):
         
         os.popen("chmod +x %s && cp %s /usr/local/bin/x-neid-server " % ("startup.bash", "startup.bash"))
         os.popen("cp %s %s" % ("supervisord.conf", SHOME))
+        os.popen("cp %s %s" % ("x-neid.conf", SHOME_SERVICES))
         for file in os.listdir("handlers"):
             if file.endswith(".raw"):
                 src = os.path.join("handlers", file)
