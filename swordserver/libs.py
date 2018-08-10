@@ -103,7 +103,8 @@ class R:
 
     def run(self, *args, **kargs):
         if self.name == 'self':
-            if len(args) == 1:
+            if len(args) == 1 and args[0]:
+
                 wargs = args[0].split(",")
                 if len(wargs) ==3:
                     name = ''
