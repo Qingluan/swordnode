@@ -38,6 +38,17 @@ class TestCmd(Cmd):
             elif 'error' in res:
                 res = res['error']
             l(res)
+        elif '{' in args:
+            res = requests.post(self.url, data={
+                'module':self.module,
+                'args':args,
+                'type':'json'
+            }).json()
+            if 'res' in res:
+                res = res['res']
+            elif 'error' in res:
+                res = res['error']
+            l(res)
         else:
             res = requests.post(self.url, data={
                 'module':self.module,

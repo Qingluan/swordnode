@@ -77,8 +77,8 @@ class IndexHandler(BaseHandler):
         # you should get some argument from follow 
         parser = HandleRest(self, tp='tornado')
         r = R(name=parser.module, loop=self.tloop, callback=parser.rest_write)
-        print(*parser.args, **parser.kargs)
-        res = r.run(*parser.args, **parser.kargs)
+        print(*parser.args, **parser.kwargs)
+        res = r.run(*parser.args, **parser.kwargs)
         if res:
             self.json_reply({'error': res})
             self.finish()

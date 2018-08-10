@@ -210,11 +210,17 @@ class HandleRest:
                     return self.handle.get_argument(x)
                 except Exception as e:
                     return None
+            keys = self.handle.request.arguments
             
         tp = extr('type')
         args = extr('args')
         self.module = extr('module')
         self.type = tp
+        self.kwargs = {}
+        for k in keys:
+            if k in ['type', 'args', 'module']:
+                continue
+            self.kwargs[k] = extr(k)
 
         print('rec: %s' % args)
 
