@@ -42,7 +42,7 @@ class MyInstall(install):
         os.popen("cd %s && git remote add origin https://github.com/Qingluan/x-plugins.git"  % TEST_MODULES_ROOT)
         
         os.popen("chmod +x %s && cp %s /usr/local/bin/x-neid-server " % ("startup.bash", "startup.bash"))
-
+        os.popen("cp %s %s" % ("supervisor.conf", SHOME))
         for file in os.listdir("handlers"):
             if file.endswith(".raw"):
                 src = os.path.join("handlers", file)
