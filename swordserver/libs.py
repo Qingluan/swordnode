@@ -46,7 +46,7 @@ class R:
         if path.endswith("/"):
             path = path[:-1]
         r = Repo(name=name, url=url, path=path)
-        os.popen("cd %s && git init || git remote add %s  %s" % (r.path.strip(), r.name.strip(), r.path.strip()))
+        os.popen("cd %s && git init || git remote add %s  %s" % (r.path.strip(), r.name.strip(), r.url.strip()))
         r.save(c)
 
     def update(self, repo_name):
