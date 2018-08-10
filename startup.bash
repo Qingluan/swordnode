@@ -4,13 +4,17 @@ if [ !  -d /var/log/supervisord ];then
     mkdir /var/log/supervisord
 fi
 
-reload
 
 if [ ! "$(which supervisord)" ];then
     echo -n "install supervisord ..."
     pip3 install -U git+https://github.com/Supervisor/supervisor.git 1>/dev/null 2>/dev/null;
     echo  " ok"
 fi
+
+
+supervisorctl reread;
+supervisorctl update;
+
 
 if [ ! "$(ps aux | grep supervisord | grep -v grep | xargs )" ];then
     echo -n  "[+] Startup supervisord"
