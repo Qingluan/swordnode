@@ -135,6 +135,7 @@ class R:
                     rs = c.query(Repo)
                     return json.dumps([r.get_dict() for r in rs])
                 else:
+                    c = Cache(REPO_DB)
                     r = c.query_one(Repo, name=wargs[0])
                     if r:
                         res = self.update(r.name)
