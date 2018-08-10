@@ -4,34 +4,47 @@ if [ !  -d /var/log/supervisord ];then
     mkdir /var/log/supervisord
 fi
 
+reload
 
 if [ ! "$(which supervisord)" ];then
-    echo "install supervisord ..."
+    echo -n "install supervisord ..."
     pip3 install -U git+https://github.com/Supervisor/supervisor.git 1>/dev/null 2>/dev/null;
-    echo -n " ok"
+    echo  " ok"
 fi
 
 if [ ! "$(ps aux | grep supervisord | grep -v grep | xargs )" ];then
-    echo "[+] Startup supervisord"
+    echo -n  "[+] Startup supervisord"
     supervisord -c ~/.config/SwordNode/supervisord.conf
     if [ $? -eq 0 ];then 
-        echo -n " successful"
+        echo  " successful"
     else
-        echo -n " failed"
+        echo  " failed"
     fi
 fi
 
+reload() {
+    echo -n "[+] update "
+    supervisorctl reread;
+    supervisorctl update;
+    echo "ok"
+}
+
 start() {
+    echo -n "[+] Start Server "
     supervisorctl start x-neid
-    echo "Start Server "
+    echo " ok"
 }
 
 stop() {
+    echo -n "[+] Stop Server "
     supervisorctl stop x-neid
+    echo " ok"
 }
 
 restart() {
+    echo -n "[+] Restart Server "
     supervisorctl restart x-neid   
+    echo " ok"
 }
 
 upgrade() {
