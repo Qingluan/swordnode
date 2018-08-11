@@ -10,8 +10,8 @@ from qlib.io import GeneratorApi
 import os
 J = os.path.join
 HOME = os.path.expanduser("~/.config/SwordNode/")
-cak = J(HOME, 'ca.key')
-cac = J(HOME, 'ca.csr')
+cak = J(HOME, 'server.key')
+cac = J(HOME, 'server.crt')
 
 def main():
     args = GeneratorApi({
