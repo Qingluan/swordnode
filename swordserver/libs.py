@@ -1,6 +1,7 @@
 from qlib.data import dbobj, Cache
 from concurrent.futures.thread import  ThreadPoolExecutor
 from termcolor import colored
+from functools import partial
 import importlib
 
 import tornado
@@ -174,7 +175,12 @@ class R:
             if isinstance(Obj, str):
                 return Obj
 
-            futu = R.exes.submit(Obj.run, *args, **kargs)
+            if 'loop' in Obj.run.__code__.co_varnames:
+                fff = partial(Obj.run, loop=self.loop)
+
+            fff = partial(Obj.run, *args, **kargs)
+
+            futu = R.exes.submit(fff)
             if hasattr(Obj, 'callback'):
                 self.__callback = Obj.callback
             futu.add_done_callback(self.callback)
