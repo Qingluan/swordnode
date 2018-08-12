@@ -176,6 +176,7 @@ class R:
                 return Obj
 
             if 'loop' in Obj.run.__code__.co_varnames:
+                print("patch loop",self.loop)
                 fff = partial(Obj.run, loop=self.loop)
 
             fff = partial(Obj.run, *args, **kargs)
