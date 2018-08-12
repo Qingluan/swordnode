@@ -23,6 +23,7 @@ def main():
     http_server = tornado.httpserver.HTTPServer(appication, ssl_options={
         "certfile": cac,
         "keyfile": cak,
+        'password':'hello'
     })
     http_server.listen(443)
     tornado.ioloop.IOLoop.instance().start()
