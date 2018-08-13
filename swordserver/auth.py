@@ -1,4 +1,4 @@
-import os, sys, socks, json
+import os, sys, socks, json, time
 from qlib.data import dbobj, Cache
 from base64 import b64encode, b64decode
 from functools import partial
@@ -31,8 +31,12 @@ class Token(dbobj):
         if not db:
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
+        now_time = time.time()
         logging.info(f"{client._phone_code_hash} my phone: {self.phone}")
-        return client._phone_code_hash.get(self.phone)
+        return {
+            'hash_code':client._phone_code_hash.get(self.phone),
+            'now_time': now_time
+        }
 
 
     async def login(self, code, client=None, db=None, proxy=None,loop=None):
@@ -41,11 +45,15 @@ class Token(dbobj):
             client = await self.connect(proxy, loop=loop)
         if not db:
             db = Cache(USER_DB_PATH)
-        if not client.is_user_authorized():
-            try:
-                client.sign_in(phone=self.phone, code=code, phone_code_hash=self.hash_code)
-            except ValueError as e:
-                return str(e)
+        
+        now_time = time.time()
+        if now_time - self.time > self.set_timeout:
+            return 'retry', client
+
+        try:
+            client.sign_in(phone=self.phone, code=code, phone_code_hash=self.hash_code)
+        except ValueError as e:
+            return str(e)
         me = client.get_me()
         if me:
             return self.hash_code,client
@@ -55,12 +63,11 @@ class Token(dbobj):
     def set_token(token, phone, client=None):
         c = Cache(USER_DB_PATH)
         if not c.query_one(Token):
-            t = Token(tp='tel', token=token, phone=phone, hash_code='0')
+            t = Token(tp='tel', token=token, phone=phone, hash_code='0', set_timeout=24*60)
             t.save(c)
         else:
-
             if client and client.is_user_authorized():
-                t = Token(tp='tel', token=token, phone=phone, hash_code='0')
+                t = Token(tp='tel', token=token, phone=phone, hash_code='0', set_timeout=24*60)
                 t.save(c)
 
 
@@ -81,10 +88,12 @@ class Auth:
         
         user = self.db.query_one(Token, phone=phone)
         
-        def update_user(hash_code):
-            user.hash_code = hash_code
+        def update_user(res):
+            user.time = res['now_time']
+            user.hash_code = res['hash_code']
             user.save(self.db)
             logging.info(f"save hash_code: {hash_code}")
+        
         if user:
             f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
             # asyncio.get_event_loop().run_until_complete(f)
@@ -94,9 +103,19 @@ class Auth:
 
     def login(self, phone, code, callback):
         user = self.db.query_one(Token, phone=phone)
+
+        def _middle_deal(x):
+            w = x.result()
+            if w[0] == 'retry':
+                self.sendcode(phone)
+                callback("token dispired,resend code to device!", x[1])
+                
+            else:
+                callback(*x)
+
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
-            f.add_done_callback(lambda x: callback(*x.result()))
+            f.add_done_callback(_middle_deal)
             # logging.info(w)
             # = asyncio.get_event_loop().run_until_complete(f)
             # if msg == 'ok':

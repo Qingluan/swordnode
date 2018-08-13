@@ -88,6 +88,9 @@ class AuthHandler(BaseHandler):
             auth.sendcode(phone)
             self.json_reply({'msg':'please recive code!'})
             self.finish()
+        else:
+            self.json_reply({"msg":f'error cmd: {cmd}'})
+            self.finish()
     
 
 class IndexHandler(BaseHandler):
