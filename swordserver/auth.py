@@ -1,7 +1,7 @@
 import os, sys, socks, json
 from qlib.data import dbobj, Cache
 from base64 import b64encode, b64decode
-
+from functools import partial
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.types import  MessageMediaDocument
@@ -79,12 +79,14 @@ class Auth:
     def sendcode(self, phone):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            self.loop.run_until_complete(user.send_code(proxy=self.proxy, loop=self.loop))
+            f = partial(user.send_code(proxy=self.proxy, loop=self.loop))
+            self.loop.run_sync(f)
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            msg,c = self.loop.run_until_complete(user.login(code, proxy=self.proxy, loop=self.loop))
+            f = partial(user.login(code, proxy=self.proxy, loop=self.loop))
+            msg,c = self.loop.run_sync(f)
             if msg == 'ok':
                 return user.hash_code
             return False
