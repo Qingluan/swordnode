@@ -79,13 +79,13 @@ class Auth:
     def sendcode(self, phone):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            f = partial(user.send_code(proxy=self.proxy, loop=self.loop))
+            f = partial(user.send_code,proxy=self.proxy, loop=self.loop)
             self.loop.run_sync(f)
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            f = partial(user.login(code, proxy=self.proxy, loop=self.loop))
+            f = partial(user.login, code, proxy=self.proxy, loop=self.loop)
             msg,c = self.loop.run_sync(f)
             if msg == 'ok':
                 return user.hash_code
