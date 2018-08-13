@@ -180,8 +180,8 @@ class R:
             if 'loop' in Obj.run.__code__.co_varnames:
                 logging.info("patch with loop")
                 fff = partial(Obj.run, loop=self.loop)
-            else:
-                logging.info("patch with loop")
+            
+                
             fff = partial(Obj.run, *args, **kargs)
 
             futu = R.exes.submit(fff)
