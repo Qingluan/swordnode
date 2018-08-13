@@ -7,6 +7,7 @@ from telethon.errors import SessionPasswordNeededError
 from telethon.tl.types import  MessageMediaDocument
 from telethon.utils import get_display_name
 import logging
+import asyncio
 
 USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
 
@@ -79,14 +80,14 @@ class Auth:
     def sendcode(self, phone):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            f = partial(user.send_code,proxy=self.proxy, loop=self.loop)
-            self.loop.run_sync(f)
+            f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
+            asyncio.get_event_loop().run_until_complete(f)
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            f = partial(user.login, code, proxy=self.proxy, loop=self.loop)
-            msg,c = self.loop.run_sync(f)
+            f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
+            msg,c = asyncio.get_event_loop().run_until_complete(f)
             if msg == 'ok':
                 return user.hash_code
             return False
