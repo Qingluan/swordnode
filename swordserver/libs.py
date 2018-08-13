@@ -175,7 +175,8 @@ class R:
             Obj = self.load(self.name)
             if isinstance(Obj, str):
                 return Obj
-
+            if not self.loop:
+                logging.warn("loop is None.")
             if 'loop' in Obj.run.__code__.co_varnames:
                 logging.info("patch with loop")
                 fff = partial(Obj.run, loop=self.loop)
