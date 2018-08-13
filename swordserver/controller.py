@@ -8,7 +8,7 @@ import tornado.web
 from tornado.websocket import WebSocketHandler
 from .libs import R
 from .libs import HandleRest
-
+import logging
 
 class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):

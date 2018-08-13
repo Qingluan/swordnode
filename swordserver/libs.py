@@ -10,6 +10,7 @@ import pickle
 import json
 import os
 import sys
+import loging
 
 TEST_MODULES_ROOT = os.path.expanduser("~/.config/SwordNode/plugins/Plugins")
 REPO_DB = os.path.expanduser("~/.config/SwordNode/plugins/repo.db")
@@ -176,10 +177,10 @@ class R:
                 return Obj
 
             if 'loop' in Obj.run.__code__.co_varnames:
-                print("patch loop",self.loop)
+                loging.debug("patch with loop")
                 fff = partial(Obj.run, loop=self.loop)
             else:
-                print("no patch")
+                loging.info("patch with loop")
             fff = partial(Obj.run, *args, **kargs)
 
             futu = R.exes.submit(fff)
