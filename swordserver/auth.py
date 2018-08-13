@@ -21,7 +21,7 @@ class Token(dbobj):
         api_id, api_hash = self.token.split(":")
         api_id = int(api_id)
         client = TelegramClient('session', api_id=api_id, api_hash=api_hash, proxy=proxy)
-        await client.connect()
+        client.connect()
         return client
         
 
