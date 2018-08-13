@@ -8,7 +8,7 @@ from telethon.tl.types import  MessageMediaDocument
 from telethon.utils import get_display_name
 import logging
 
-USER_DB_PATH = os.path.expanduser("~/SwordNode/user/.tel.sql")
+USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
 
 if not os.path.exists(os.path.dirname(USER_DB_PATH)):
     os.mkdir(os.path.dirname(USER_DB_PATH))

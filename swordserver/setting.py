@@ -16,10 +16,10 @@ J = os.path.join
 if not E(os.path.expanduser("~/.config")):
     os.mkdir(os.path.expanduser("~/.config"))
 SHOME = os.path.expanduser("~/.config/SwordNode")
-USER_DB_PATH = os.path.expanduser("~/SwordNode/user/.tel.sql")
+USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
 
-if not E(os.path.expanduser("~/SwordNode/user")):
-    os.mkdir(os.path.expanduser("~/SwordNode/user"))
+if not E(os.path.expanduser("~/.config/SwordNode/user")):
+    os.mkdir(os.path.expanduser("~/.config/SwordNode/user"))
 
 if not E(SHOME):
     os.mkdir(SHOME)
