@@ -88,7 +88,8 @@ class Auth:
         user = self.db.query_one(Token, phone=phone)
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
-            msg,c = asyncio.get_event_loop().run_until_complete(f)
+            msg,c = f.result()
+             # = asyncio.get_event_loop().run_until_complete(f)
             if msg == 'ok':
                 return user.hash_code
             return False
