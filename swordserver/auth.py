@@ -107,10 +107,10 @@ class Auth:
             w = x.result()
             if w[0] == 'retry':
                 self.sendcode(phone)
-                callback("token dispired,resend code to device!", x[1])
+                callback("token dispired,resend code to device!", w[1])
                 
             else:
-                callback(*x)
+                callback(*w)
 
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
