@@ -76,11 +76,11 @@ class AuthHandler(BaseHandler):
             auth.registe(phone, token)
             self.json_reply({'msg': 'regist ok'})
         elif cmd == 'login':
-            client = await  auth.connect(proxy=proxy)
-            api_key = await auth.login(cleint=client,phone, code)
+            await client =   auth.connect(proxy=proxy)
+            await api_key = auth.login(cleint=client,phone, code)
             self.json_reply({'api': api_key})
         elif cmd == 'auth':
-            client = await  auth.connect(proxy=proxy)
+            await client =   auth.connect(proxy=proxy)
             await auth.sendcode(client=client,phone)
             self.json_reply({'msg':'please recive code!'})
         self.finish()
