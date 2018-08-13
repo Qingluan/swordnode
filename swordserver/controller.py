@@ -107,28 +107,21 @@ class IndexHandler(BaseHandler):
         if not key:
             self.json_reply({'error': 'no auth!'})
             self.finish()
-        
-        if proxy:
-            h,p = proxy.split(":")
-            proxy = (socks.SOCKS5, h, int(p))
-        
-        auth = Auth(self.settings['user_db_path'], proxy=proxy)
-        if auth.if_auth(key):
-            r = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
-            print(parser.args, parser.kwargs)
-            res = r.run(*parser.args, **parser.kwargs)
-            if res:
-                self.json_reply({'error': res})
-                self.finish()
         else:
-            self.json_reply({'error': 'No auth!'})
-            self.finish()
-        # .....
-        # for parse json post
-        # post_args = json.loads(self.request.body.decode("utf8", "ignore"))['msg']
-        
-        # redirect or reply some content
-        # self.redirect()  
-        # self.json_reply({'res': 'ok'})
-        # self.finish()
+            if proxy:
+                h,p = proxy.split(":")
+                proxy = (socks.SOCKS5, h, int(p))
+            
+            auth = Auth(self.settings['user_db_path'], proxy=proxy)
+            if auth.if_auth(key):
+                r = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
+                print(parser.args, parser.kwargs)
+                res = r.run(*parser.args, **parser.kwargs)
+                if res:
+                    self.json_reply({'error': res})
+                    self.finish()
+            else:
+                self.json_reply({'error': 'No auth!'})
+                self.finish()
+
     

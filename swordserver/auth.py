@@ -28,7 +28,7 @@ class Token(dbobj):
         if not client:
             client = self.connect(proxy)
         if not db:
-            db = Cache(DB_PATH)
+            db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
         self.hash_code = client._phone_code_hash.get(self.phone[1:])
         self.save(db)
