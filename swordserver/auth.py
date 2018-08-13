@@ -16,27 +16,27 @@ if not os.path.exists(os.path.dirname(USER_DB_PATH)):
 
 class Token(dbobj):
 
-    def connect(self, proxy=None):
+    def connect(self, proxy=None, loop=None):
         api_id, api_hash = self.token.split(":")
         api_id = int(api_id)
-        client = TelegramClient('session', api_id=api_id, api_hash=api_hash, proxy=proxy)
+        client = TelegramClient('session', api_id=api_id, api_hash=api_hash, proxy=proxy, loop=loop)
         client.connect()
         return client
         
 
-    def send_code(self, client=None, db=None, proxy=None):
+    def send_code(self, client=None, db=None, proxy=None, loop=None):
         if not client:
-            client = self.connect(proxy)
+            client = self.connect(proxy, loop=loop)
         if not db:
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
         self.hash_code = client._phone_code_hash.get(self.phone[1:])
         self.save(db)
 
-    def login(self, code, client=None, db=None, proxy=None):
+    def login(self, code, client=None, db=None, proxy=None,loop=None):
         # Ensure you're authorized
         if not client:
-            client = self.connect(proxy)
+            client = self.connect(proxy, loop=loop)
         if not db:
             db = Cache(USER_DB_PATH)
         if not client.is_user_authorized():
@@ -65,12 +65,13 @@ class Token(dbobj):
 
 class Auth:
 
-    def __init__(self, db, proxy=None):
+    def __init__(self, db, proxy=None, loop=None):
         if isinstance(db, str):
             self.db = Cache(db)
         else:
             self.db = db
         self.proxy = proxy
+        self.loop = loop
 
     def registe(self, phone, token, client=None):
         Token.set_token(token, phone, client=client)
@@ -78,12 +79,12 @@ class Auth:
     def sendcode(self, phone):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            user.send_code(proxy=self.proxy)
+            user.send_code(proxy=self.proxy, loop=self.loop)
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            msg,c = user.login(code, proxy=self.proxy)
+            msg,c = user.login(code, proxy=self.proxy, loop=self.loop)
             if msg == 'ok':
                 return user.hash_code
             return False
