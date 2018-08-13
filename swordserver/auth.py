@@ -34,6 +34,7 @@ class Token(dbobj):
         self.hash_code = client._phone_code_hash.get(self.phone[1:])
         self.save(db)
 
+
     async def login(self, code, client=None, db=None, proxy=None,loop=None):
         # Ensure you're authorized
         if not client:
@@ -78,17 +79,25 @@ class Auth:
         Token.set_token(token, phone, client=client)
 
     def sendcode(self, phone):
+        
         user = self.db.query_one(Token, phone=phone)
+        
+        def update_user(hash_code):
+            user.hash_code = hash_code
+            user.save(self.db)
+            logging.info(f"save hash_code: {hash_code}")
         if user:
             f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
             # asyncio.get_event_loop().run_until_complete(f)
-            f.add_done_callback(logging.info)
+            f.add_done_callback(lambda x: update_user(x.result()))
+            
 
-    def login(self, phone, code):
+
+    def login(self, phone, code, callback):
         user = self.db.query_one(Token, phone=phone)
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
-            f.add_done_callback(logging.info)
+            f.add_done_callback(lambda x: callback(x.result()))
             # logging.info(w)
             # = asyncio.get_event_loop().run_until_complete(f)
             # if msg == 'ok':

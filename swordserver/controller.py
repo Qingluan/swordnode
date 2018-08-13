@@ -75,15 +75,18 @@ class AuthHandler(BaseHandler):
         if cmd == 'regist':
             auth.registe(phone, token)
             self.json_reply({'msg': 'regist ok'})
+            self.finish()
         elif cmd == 'login':
+            def _reply(x):
+                self.json_reply({"api":x})
+                self.finish()
+            auth.login(phone, code, lambda x: _reply(x))
             
-            api_key = auth.login(phone, code)
-            self.json_reply({'api': api_key})
         elif cmd == 'auth':
             
             auth.sendcode(phone)
             self.json_reply({'msg':'please recive code!'})
-        self.finish()
+            self.finish()
     
 
 class IndexHandler(BaseHandler):
