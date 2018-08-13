@@ -16,6 +16,11 @@ J = os.path.join
 if not E(os.path.expanduser("~/.config")):
     os.mkdir(os.path.expanduser("~/.config"))
 SHOME = os.path.expanduser("~/.config/SwordNode")
+USER_DB_PATH = os.path.expanduser("~/SwordNode/user/.tel.sql")
+
+if not E(os.path.expanduser("~/SwordNode/user")):
+    os.mkdir(os.path.expanduser("~/SwordNode/user"))
+
 if not E(SHOME):
     os.mkdir(SHOME)
 
@@ -49,6 +54,7 @@ Settings = {
         'L': LogControl,
         'debug':True,
         "ui_modules": ui,
+        "user_db_path":USER_DB_PATH,
         'autoreload':True,
         'cookie_secret':'This string can be any thing you want',
         'static_path' : static_path,
@@ -63,6 +69,7 @@ except FileExistsError:
 #
 appication = tornado.web.Application([
                 (r'/',IndexHandler),
+                (r'/auth',AuthHandler),
                 # add some new route to router
                 ##<route></route>
                 # (r'/main',MainHandler),

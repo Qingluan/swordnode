@@ -5,9 +5,12 @@
 import json
 import tornado
 import tornado.web
+import socks
 from tornado.websocket import WebSocketHandler
-from .libs import R
-from .libs import HandleRest
+from .libs import RApi
+from .libs import TornadoArgs
+from .auth import Auth
+
 import logging
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -56,7 +59,30 @@ class SocketHandler(WebSocketHandler):
 
 
 
+class AuthHandler(BaseHandler):
 
+    @tornado.web.asynchronous
+    def post(self):
+        # you should get some argument from follow 
+        parser = TornadoArgs(self, tp='tornado')
+        cmd = parser.get_parameter("cmd")
+        phone = parser.get_parameter("phone")
+        token = parser.get_parameter("token")
+        code = parser.get_parameter("code")
+        proxy = parser.get_parameter("proxy")
+
+        auth = Auth(self.setting['user_db_path'])
+        if cmd == 'regist':
+            auth.registe(phone, token)
+            self.json_reply({'msg': 'regist ok'})
+        elif cmd == 'login':
+            api_key= auth.login(phone, code)
+            self.json_reply({'api': api_key})
+        elif cmd == 'auth':
+            auth.sendcode(phone)
+            self.json_reply({'msg':'please recive code!'})
+        self.finish()
+    
 
 class IndexHandler(BaseHandler):
     
@@ -75,14 +101,28 @@ class IndexHandler(BaseHandler):
     @tornado.web.asynchronous
     def post(self):
         # you should get some argument from follow 
-        parser = HandleRest(self, tp='tornado')
-        r = R(name=parser.module, loop=self.tloop, callback=parser.rest_write)
-        print(parser.args, parser.kwargs)
-        res = r.run(*parser.args, **parser.kwargs)
-        if res:
-            self.json_reply({'error': res})
+        parser = TornadoArgs(self, tp='tornado')
+        proxy = parser.get_parameter("proxy")
+        key = parser.get_parameter("Api-key", l='head')
+        if not key:
+            self.json_reply({'error': 'no auth!'})
             self.finish()
-
+        
+        if proxy:
+            h,p = proxy.split(":")
+            proxy = (socks.SOCKS5, h, int(p))
+        
+        auth = Auth(self.setting['user_db_path'], proxy=proxy)
+        if auth.if_auth(key):
+            r = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
+            print(parser.args, parser.kwargs)
+            res = r.run(*parser.args, **parser.kwargs)
+            if res:
+                self.json_reply({'error': res})
+                self.finish()
+        else:
+            self.json_reply({'error': 'No auth!'})
+            self.finish()
         # .....
         # for parse json post
         # post_args = json.loads(self.request.body.decode("utf8", "ignore"))['msg']

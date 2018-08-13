@@ -36,7 +36,7 @@ def load(name):
     
 
 
-class R:
+class RApi:
     exes = ThreadPoolExecutor(max_workers=40)
     def __init__(self, name, loop=None, callback=None):
         self.name = name
@@ -206,8 +206,7 @@ class R:
 
 
 
-
-class HandleRest:
+class BaseArgs:
 
     def __init__(self, handle, tp=None):
         self.handle = handle
@@ -216,26 +215,28 @@ class HandleRest:
         self._tp = tp
         self.parse()
 
-    def parse(self):
-        if hasattr(self.handle, 'get_argument'):
-            def extr(x):
-                try:
-                    return self.handle.get_argument(x)
-                except Exception as e:
-                    return None
-            keys = self.handle.request.arguments
-            
-        tp = extr('type')
-        args = extr('args')
-        self.module = extr('module')
+
+    def get_parameter(self):
+        raise NotImplementedError("")
+
+    def get_parameter_keys(self):
+        raise NotImplementedError("")
+
+    def finish(self,D):
+        raise NotImplementedError("")
+
+    def parse(self):    
+        tp = self.get_parameter("type")
+        args = self.get_parameter('args')
+        self.module = self.get_parameter('module')
         self.type = tp
         self.kwargs = {}
+
+        keys = self.get_parameter_keys()
         for k in keys:
             if k in ['type', 'args', 'module']:
                 continue
-            self.kwargs[k] = extr(k)
-
-        print('rec: %s' % args)
+            self.kwargs[k] = self.get_parameter(k)
 
         if tp == 'base64':
             if isinstance(args, str):
@@ -254,19 +255,37 @@ class HandleRest:
         else:
             self.args = [args]
 
-    def rest_write(self, data):
+    def after_dealwith(self, data):
         b_data = {'res':None, 'type':'json'}
-        if self._tp == 'tornado':
-            if isinstance(data, str) or isinstance(data, (list, dict, tuple, )):
-                b_data['res'] = data
-            elif isinstance(data, (int,float,bool,)):
-                b_data['res'] = data
-            else:
-                b_data['res'] = base64.b64encode(pickle.dumps(data))
-                b_data['type'] = 'pickle'
-
-            self.handle.write(json.dumps(b_data))
-            self.handle.finish()
         
+        if isinstance(data, str) or isinstance(data, (list, dict, tuple, )):
+            b_data['res'] = data
+        elif isinstance(data, (int,float,bool,)):
+            b_data['res'] = data
         else:
-            pass
+            b_data['res'] = base64.b64encode(pickle.dumps(data))
+            b_data['type'] = 'pickle'
+
+        D = json.dumps(b_data)
+        self.finish(D)
+            
+
+class TornadoArgs(BaseArgs):
+
+    def get_parameter(self, key, l=None):
+        if l == 'head':
+            return self.request.headers.get(key)
+        else:
+            try:
+                return self.handle.get_argument(key)
+            except Exception as e:
+                return None
+      
+
+    def get_parameter_keys(self):
+        return self.handle.request.arguments
+
+    def finish(self, data):
+        self.handle.write(data)
+        self.handle.finish()
+    
