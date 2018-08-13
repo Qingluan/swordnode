@@ -28,8 +28,7 @@ class Token(dbobj):
     async def send_code(self, client=None, db=None, proxy=None, loop=None):
         if not client:
             client = await self.connect(proxy, loop=loop)
-        if not db:
-            db = Cache(USER_DB_PATH)
+        
         client.sign_in(phone=self.phone)
         now_time = time.time()
         logging.info(f"{client._phone_code_hash} my phone: {self.phone}")
