@@ -10,7 +10,7 @@ import pickle
 import json
 import os
 import sys
-import loging
+import logging
 
 TEST_MODULES_ROOT = os.path.expanduser("~/.config/SwordNode/plugins/Plugins")
 REPO_DB = os.path.expanduser("~/.config/SwordNode/plugins/repo.db")
