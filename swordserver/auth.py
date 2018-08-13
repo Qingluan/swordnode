@@ -16,27 +16,27 @@ if not os.path.exists(os.path.dirname(USER_DB_PATH)):
 
 class Token(dbobj):
 
-    def connect(self, proxy=None, loop=None):
+    async def connect(self, proxy=None, loop=None):
         api_id, api_hash = self.token.split(":")
         api_id = int(api_id)
-        client = TelegramClient('session', api_id=api_id, api_hash=api_hash, proxy=proxy, loop=loop)
-        client.connect()
+        client = TelegramClient('session', api_id=api_id, api_hash=api_hash, proxy=proxy)
+        await client.connect()
         return client
         
 
-    def send_code(self, client=None, db=None, proxy=None, loop=None):
+    async def send_code(self, client=None, db=None, proxy=None, loop=None):
         if not client:
-            client = self.connect(proxy, loop=loop)
+            client = await self.connect(proxy, loop=loop)
         if not db:
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
         self.hash_code = client._phone_code_hash.get(self.phone[1:])
         self.save(db)
 
-    def login(self, code, client=None, db=None, proxy=None,loop=None):
+    async def login(self, code, client=None, db=None, proxy=None,loop=None):
         # Ensure you're authorized
         if not client:
-            client = self.connect(proxy, loop=loop)
+            client = await self.connect(proxy, loop=loop)
         if not db:
             db = Cache(USER_DB_PATH)
         if not client.is_user_authorized():
@@ -45,7 +45,7 @@ class Token(dbobj):
             except ValueError:
                 self.send_code(client)
                 return 'auth fail resend code to your device'
-        me = client.get_me()
+        me = await client.get_me()
         if me:
             return "ok",client
         return 'fail',client
@@ -79,12 +79,12 @@ class Auth:
     def sendcode(self, phone):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            user.send_code(proxy=self.proxy, loop=self.loop)
+            self.loop.run_until_complete(user.send_code(proxy=self.proxy, loop=self.loop))
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
         if user:
-            msg,c = user.login(code, proxy=self.proxy, loop=self.loop)
+            msg,c = self.loop.run_until_complete(user.login(code, proxy=self.proxy, loop=self.loop))
             if msg == 'ok':
                 return user.hash_code
             return False
