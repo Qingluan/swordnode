@@ -92,7 +92,7 @@ class Auth:
             user.time = res['now_time']
             user.hash_code = res['hash_code']
             user.save(self.db)
-            logging.info(f"save hash_code: {hash_code}")
+            logging.info(f"save hash_code: {res}")
         
         if user:
             f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
