@@ -44,7 +44,7 @@ class Token(dbobj):
             try:
                 client.sign_in(phone=self.phone, code=code, phone_code_hash=self.hash_code)
             except ValueError:
-                self.send_code(client)
+                await self.send_code(client)
                 return 'auth fail resend code to your device'
         me = await client.get_me()
         if me:
@@ -82,13 +82,13 @@ class Auth:
         if user:
             f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
             # asyncio.get_event_loop().run_until_complete(f)
-            f.add_done_callback(partial(print, "Finish"))
+            f.add_done_callback(logging.info)
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
-            w  = f.result()
+            f.add_done_callback(logging.info)
             logging.info(w)
             # = asyncio.get_event_loop().run_until_complete(f)
             # if msg == 'ok':
