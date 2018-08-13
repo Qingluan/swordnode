@@ -77,8 +77,9 @@ class AuthHandler(BaseHandler):
             self.json_reply({'msg': 'regist ok'})
             self.finish()
         elif cmd == 'login':
-            def _reply(x):
-                self.json_reply({"api":x})
+            def _reply(x, client):
+                
+                self.json_reply({"api": x})
                 self.finish()
             auth.login(phone, code, lambda x: _reply(x))
             

@@ -31,9 +31,8 @@ class Token(dbobj):
         if not db:
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
-        client._phone_code_hash.get(self.phone[1:])
         logging.info(f"{client._phone_code_hash} my phone: {self.phone}")
-        return list(client._phone_code_hash.values())[0]
+        return client._phone_code_hash.get(self.phone)
 
 
     async def login(self, code, client=None, db=None, proxy=None,loop=None):
@@ -46,12 +45,11 @@ class Token(dbobj):
             try:
                 client.sign_in(phone=self.phone, code=code, phone_code_hash=self.hash_code)
             except ValueError as e:
-                await self.send_code(client)
                 return str(e)
-        me = await client.get_me()
+        me = client.get_me()
         if me:
-            return "ok",client
-        return 'fail',client
+            return self.hash_code,client
+        return 'error please retry',client
 
     @staticmethod
     def set_token(token, phone, client=None):
@@ -102,7 +100,7 @@ class Auth:
             # logging.info(w)
             # = asyncio.get_event_loop().run_until_complete(f)
             # if msg == 'ok':
-            return user.hash_code
+            # return user.hash_code
             # return False
         else:
             return False
