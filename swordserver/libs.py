@@ -16,7 +16,7 @@ TEST_MODULES_ROOT = os.path.expanduser("~/.config/SwordNode/plugins/Plugins")
 REPO_DB = os.path.expanduser("~/.config/SwordNode/plugins/repo.db")
 DEFAULT_REPO_PATH = os.path.expanduser("~/.config/SwordNode/plugins/Plugins")
 REPO_NOW_USE = os.path.expanduser("~/.config/SwordNode/plugins/now_repo")
-
+logging.basicConfig(level=logging.INFO)
 class OO:pass
 
 class Repo(dbobj):pass
