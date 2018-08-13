@@ -89,7 +89,7 @@ class Auth:
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
             f.add_done_callback(logging.info)
-            logging.info(w)
+            # logging.info(w)
             # = asyncio.get_event_loop().run_until_complete(f)
             # if msg == 'ok':
             return user.hash_code
