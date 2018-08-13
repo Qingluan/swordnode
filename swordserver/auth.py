@@ -96,7 +96,7 @@ class Auth:
         user = self.db.query_one(Token, phone=phone)
         if user:
             f = asyncio.ensure_future(user.login(code, proxy=self.proxy, loop=self.loop))
-            f.add_done_callback(lambda x: callback(x.result()))
+            f.add_done_callback(lambda x: callback(*x.result()))
             # logging.info(w)
             # = asyncio.get_event_loop().run_until_complete(f)
             # if msg == 'ok':
