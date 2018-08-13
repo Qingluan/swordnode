@@ -274,7 +274,7 @@ class TornadoArgs(BaseArgs):
 
     def get_parameter(self, key, l=None):
         if l == 'head':
-            return self.request.headers.get(key)
+            return self.handle.request.headers.get(key)
         else:
             try:
                 return self.handle.get_argument(key)
