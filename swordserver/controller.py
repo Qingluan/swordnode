@@ -71,7 +71,7 @@ class AuthHandler(BaseHandler):
         code = parser.get_parameter("code")
         proxy = parser.get_parameter("proxy")
 
-        auth = Auth(self.setting['user_db_path'])
+        auth = Auth(self.settings['user_db_path'])
         if cmd == 'regist':
             auth.registe(phone, token)
             self.json_reply({'msg': 'regist ok'})
@@ -112,7 +112,7 @@ class IndexHandler(BaseHandler):
             h,p = proxy.split(":")
             proxy = (socks.SOCKS5, h, int(p))
         
-        auth = Auth(self.setting['user_db_path'], proxy=proxy)
+        auth = Auth(self.settings['user_db_path'], proxy=proxy)
         if auth.if_auth(key):
             r = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
             print(parser.args, parser.kwargs)
