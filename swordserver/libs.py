@@ -177,12 +177,15 @@ class R:
                 return Obj
             if not self.loop:
                 logging.warn("loop is None.")
+            
+            fff = partial(Obj.run, *args, **kargs)
             if 'loop' in Obj.run.__code__.co_varnames:
                 logging.info("patch with loop")
-                fff = partial(Obj.run, loop=self.loop)
-            
                 
-            fff = partial(Obj.run, *args, **kargs)
+                fff = partial(fff, loop=self.loop)
+
+                
+            
 
             futu = R.exes.submit(fff)
             if hasattr(Obj, 'callback'):
