@@ -187,7 +187,7 @@ class RApi:
                 
             
 
-            futu = R.exes.submit(fff)
+            futu = RApi.exes.submit(fff)
             if hasattr(Obj, 'callback'):
                 self.__callback = Obj.callback
             futu.add_done_callback(self.callback)
