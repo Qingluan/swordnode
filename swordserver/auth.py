@@ -31,8 +31,9 @@ class Token(dbobj):
         if not db:
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
-        self.hash_code = client._phone_code_hash.get(self.phone[1:])
-        self.save(db)
+        hash_code = client._phone_code_hash.get(self.phone[1:])
+        logging.info(hash_code)
+        return hash_code
 
 
     async def login(self, code, client=None, db=None, proxy=None,loop=None):
@@ -44,9 +45,9 @@ class Token(dbobj):
         if not client.is_user_authorized():
             try:
                 client.sign_in(phone=self.phone, code=code, phone_code_hash=self.hash_code)
-            except ValueError:
+            except ValueError as e:
                 await self.send_code(client)
-                return 'auth fail resend code to your device'
+                return str(e)
         me = await client.get_me()
         if me:
             return "ok",client
@@ -90,7 +91,7 @@ class Auth:
             f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
             # asyncio.get_event_loop().run_until_complete(f)
             f.add_done_callback(lambda x: update_user(x.result()))
-            
+
 
 
     def login(self, phone, code, callback):
