@@ -31,9 +31,9 @@ class Token(dbobj):
         if not db:
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
-        hash_code = client._phone_code_hash.get(self.phone[1:])
-        logging.info(json.dumps(client._phone_code_hash))
-        return hash_code
+        client._phone_code_hash.get(self.phone[1:])
+        logging.info(f"{client._phone_code_hash} my phone: {self.phone}")
+        return list(client._phone_code_hash.values())[0]
 
 
     async def login(self, code, client=None, db=None, proxy=None,loop=None):
