@@ -81,7 +81,8 @@ class Auth:
         user = self.db.query_one(Token, phone=phone)
         if user:
             f = asyncio.ensure_future(user.send_code(proxy=self.proxy, loop=self.loop))
-            asyncio.get_event_loop().run_until_complete(f)
+            # asyncio.get_event_loop().run_until_complete(f)
+            f.add_done_callback(partial(print, "Finish"))
 
     def login(self, phone, code):
         user = self.db.query_one(Token, phone=phone)
