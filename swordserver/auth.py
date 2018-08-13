@@ -32,7 +32,7 @@ class Token(dbobj):
             db = Cache(USER_DB_PATH)
         client.sign_in(phone=self.phone)
         hash_code = client._phone_code_hash.get(self.phone[1:])
-        logging.info(hash_code)
+        logging.info(json.dumps(client._phone_code_hash))
         return hash_code
 
 
