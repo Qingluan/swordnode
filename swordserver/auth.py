@@ -77,6 +77,10 @@ class Auth:
             self.db = Cache(db)
         else:
             self.db = db
+        if proxy:
+            _,proxy = proxy.split("//")
+            h,p = proxy.split(":")
+            proxy = (socks.SOCKS5, h, int(p))
         self.proxy = proxy
         self.loop = loop
 
@@ -125,6 +129,7 @@ class Auth:
 
 
     def if_auth(self, hash_code):
+        if not hash_code: return False
         user = self.db.query_one(Token, hash_code=hash_code)
         if user:
             return True

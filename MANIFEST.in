@@ -1,2 +1,7 @@
 recursive-include swordserver *
 recursive-include handlers *
+recursive-include . server.*
+recursive-include . *.conf
+recursive-include . *.bash
+
+

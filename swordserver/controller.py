@@ -112,25 +112,24 @@ class IndexHandler(BaseHandler):
         # you should get some argument from follow 
         parser = TornadoArgs(self, tp='tornado')
         proxy = parser.get_parameter("proxy")
-        key = parser.get_parameter("Api-key", l='head')
-        if not key:
-            self.json_reply({'error': 'no auth!'})
-            self.finish()
-        else:
-            if proxy:
-                h,p = proxy.split(":")
-                proxy = (socks.SOCKS5, h, int(p))
-            
+
+        api = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
+        
+        if api.Permission == "auth":
+            key = parser.get_parameter("Api-key", l='head')    
             auth = Auth(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
             if auth.if_auth(key):
-                r = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
-                print(parser.args, parser.kwargs)
-                res = r.run(*parser.args, **parser.kwargs)
+                res = api.run(*parser.args, **parser.kwargs)
                 if res:
-                    self.json_reply({'error': res})
+                    self.json_reply({'msg': res})
                     self.finish()
             else:
                 self.json_reply({'error': 'No auth!'})
+                self.finish()
+        else:
+            res = api.run(*parser.args, **parser.kwargs)
+            if res:
+                self.json_reply({'msg': res})
                 self.finish()
 
     
