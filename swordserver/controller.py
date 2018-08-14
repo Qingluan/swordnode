@@ -7,7 +7,7 @@ import tornado
 import tornado.web
 import socks
 from tornado.websocket import WebSocketHandler
-from .libs import RApi
+from .libs import TornadoApi
 from .libs import TornadoArgs
 from .auth import Auth
 
@@ -113,7 +113,7 @@ class IndexHandler(BaseHandler):
         parser = TornadoArgs(self, tp='tornado')
         proxy = parser.get_parameter("proxy")
 
-        api = RApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
+        api = TornadoApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
         
         if api.Permission == "auth":
             key = parser.get_parameter("Api-key", l='head')    
