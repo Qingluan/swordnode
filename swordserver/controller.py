@@ -13,6 +13,7 @@ from .libs import TornadoArgs
 from mroylib import auth
 from mroylib.auth import Authentication
 import logging
+import os
 
 _USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
 auth.USER_DB_PATH =  _USER_DB_PATH
