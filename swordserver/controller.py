@@ -121,7 +121,7 @@ class IndexHandler(BaseHandler):
         proxy = parser.get_parameter("proxy")
 
         api = TornadoApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
-        
+        logging.info(f"Permission : {api.Permission}")
         if api.Permission == "auth":
             key = parser.get_parameter("Api-key", l='head')    
             _auth = Authentication(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
