@@ -8,6 +8,7 @@ import sys
 import logging
 
 
+logging.basicConfig(level=logging.INFO)
 
 class TornadoApi(BaseApi):
     BASE_REPO = 'https://github.com/Qingluan/x-plugins.git'

@@ -3,10 +3,9 @@ import requests
 import time
 
 
-def run(url):
-    st = time.time()
-    requests.head(url)
-    et = time.time() - st
-    return et
-
-
+def run(cmd, url=None, go_on=None):
+    if url:
+        st = time.time()
+        requests.head(url)
+        et = time.time() - st
+        return et
