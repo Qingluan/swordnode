@@ -9,17 +9,16 @@ import socks
 from tornado.websocket import WebSocketHandler
 from .libs import TornadoApi
 from .libs import TornadoArgs
-import logging
-logging.basicConfig(level=logging.INFO)
 
 from mroylib import auth
 from mroylib.auth import Authentication
-
+import logging
 import os
 
 _USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
 auth.USER_DB_PATH =  _USER_DB_PATH
 
+logging.basicConfig(level=logging.INFO)
 
 class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):
@@ -122,7 +121,7 @@ class IndexHandler(BaseHandler):
         proxy = parser.get_parameter("proxy")
 
         api = TornadoApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
-        logging.info(f"Permission : {api.Permission}")
+        logging.error(f"Permission : {api.Permission}")
         if api.Permission == "auth":
             key = parser.get_parameter("Api-key", l='head')    
             _auth = Authentication(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
