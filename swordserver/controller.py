@@ -18,6 +18,8 @@ import os
 _USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
 auth.USER_DB_PATH =  _USER_DB_PATH
 
+logging.basicConfig(level=logging.INFO)
+
 class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):
         self.db = self.settings['db']
