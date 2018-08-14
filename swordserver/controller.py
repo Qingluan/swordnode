@@ -9,9 +9,13 @@ import socks
 from tornado.websocket import WebSocketHandler
 from .libs import TornadoApi
 from .libs import TornadoArgs
-from .auth import Auth
 
+from mroylib import auth
+from mroylib.auth import Authentication
 import logging
+
+_USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
+auth.USER_DB_PATH =  _USER_DB_PATH
 
 class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):
@@ -71,9 +75,9 @@ class AuthHandler(BaseHandler):
         code = parser.get_parameter("code")
         proxy = parser.get_parameter("proxy")
 
-        auth = Auth(self.settings['user_db_path'], loop=self.tloop)
+        _auth = Authentication(self.settings['user_db_path'], loop=self.tloop)
         if cmd == 'regist':
-            auth.registe(phone, token)
+            _auth.registe(phone, token)
             self.json_reply({'msg': 'regist ok'})
             self.finish()
         elif cmd == 'login':
@@ -81,11 +85,11 @@ class AuthHandler(BaseHandler):
                 
                 self.json_reply({"api": x})
                 self.finish()
-            auth.login(phone, code, _reply)
+            _auth.login(phone, code, _reply)
             
         elif cmd == 'auth':
             
-            auth.sendcode(phone)
+            _auth.sendcode(phone)
             self.json_reply({'msg':'please recive code!'})
             self.finish()
         else:
@@ -117,8 +121,8 @@ class IndexHandler(BaseHandler):
         
         if api.Permission == "auth":
             key = parser.get_parameter("Api-key", l='head')    
-            auth = Auth(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
-            if auth.if_auth(key):
+            _auth = Authentication(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
+            if _auth.if_auth(key):
                 res = api.run(*parser.args, **parser.kwargs)
                 if res:
                     self.json_reply({'msg': res})
