@@ -17,10 +17,9 @@ class TornadoApi(BaseApi):
         tloop = self.loop
         if not tloop:
             tloop = tornado.ioloop.IOLoop.instance()
-        if self.__callback:
-            tloop.add_callback(lambda: self.__callback(result.result()))
-        else:
-            tloop.add_callback(lambda: self._callback(result.result()))        
+        
+        callback = self.get_callback()
+        tloop.add_callback(lambda: callback(result.result()))
 
 
 class TornadoArgs(BaseArgs):
