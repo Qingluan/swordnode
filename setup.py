@@ -62,7 +62,7 @@ class MyInstall(install):
 
 
 setup(name='x-mroy-1052',
-    version='0.0.8',
+    version='0.0.9',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},

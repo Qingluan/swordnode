@@ -88,6 +88,7 @@ class AuthHandler(BaseHandler):
                 
                 self.json_reply({"api": x})
                 self.finish()
+            logging.info(f"Loggin in: {phone} {code}" )
             _auth.login(phone, code, _reply)
             
         elif cmd == 'auth':
