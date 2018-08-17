@@ -66,7 +66,9 @@ def update_auth(db,token):
     if not t:
         t = Token(tp='tel', token='0', phone='0', hash_code=token, set_timeout=24*60)
     t.hash_code = token
-    t.save(c)
+    
+    res = t.save(c)
+    logging.info(f"db handle : {res}")
 
 # logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
