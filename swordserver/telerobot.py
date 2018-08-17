@@ -101,6 +101,8 @@ class  TokenTel(object):
             print(f"got new: {new_msg.msg_id} => {new_msg.msg_text}")
             if new_msg:
                 com, args = self.get_command(new_msg.msg_text)
+                if com:
+                    print(f"call {com} : {args}")
                 f = self._map.get(com)
                 if f:
                     f(*args)
