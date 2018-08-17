@@ -46,7 +46,7 @@ class Message(dbobj):
         if res['ok']:
             for m in res['result']:
                 mm = m['message']
-                yield cls(id=mm['message_id'], msg_text=mm['text'],to_chat=json.dumps(mm['chat']), from_chat=json.dumps(mm['from']), time=mm['date'], update_id=m['update_id'])
+                yield cls(msg_id=mm['message_id'], msg_text=mm['text'],to_chat=json.dumps(mm['chat']), from_chat=json.dumps(mm['from']), time=mm['date'], update_id=m['update_id'])
 
     @staticmethod
     def new(path):
@@ -91,8 +91,11 @@ class  TokenTel(object):
         print(f"connect to db: {self.db}")
         while 1:
             msgs = list(Message.update_msg(self.token))
-            print(f"update : {len(msgs)} : {msgs[-1].time}")
-            db.save_all(*msgs)
+            print(f"got : {len(msgs)}")
+            for msg in msgs:
+                if db.query_one(msg_id=msg.msg_id):continue
+                msg.save(db)
+                print(f"to db : {msg.msg_id} : {msg.time}", end='\r')
             try:
                 n = max(msgs, key=lambda x: x.id)
             except ValueError:
