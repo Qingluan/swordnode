@@ -90,7 +90,9 @@ class  TokenTel(object):
         db = Cache(self.db)
         print(f"connect to db: {self.db}")
         while 1:
-            msgs = Message.update_msg(self.token)
+            msgs = list(Message.update_msg(self.token))
+            print(f"update : {len(msgs)} : {msgs[-1].time}")
+            db.save_all(*msgs)
             try:
                 n = max(msgs, key=lambda x: x.id)
             except ValueError:
@@ -100,7 +102,7 @@ class  TokenTel(object):
             if f:
                 f(*args)
             time.sleep(self.interval)
-            db.save_all(*msgs)
+            
 
         
 def run_other_auth(token, auth_db):
