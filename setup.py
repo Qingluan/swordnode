@@ -62,7 +62,7 @@ class MyInstall(install):
 
 
 setup(name='x-mroy-1052',
-    version='0.0.9',
+    version='0.1.0',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},
@@ -73,7 +73,7 @@ setup(name='x-mroy-1052',
     packages=find_packages(),
     install_requires=[ 'mroylib-min','x-mroy-1045', 'qtornado'],
     entry_points={
-        'console_scripts': ['x-neid=swordserver.main:main']
+        'console_scripts': ['x-neid=swordserver.main:main', 'x-telserver=swordserver.telerobot:main',]
     },
 
 )
