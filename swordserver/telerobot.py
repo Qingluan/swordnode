@@ -28,7 +28,7 @@ class Message(dbobj):
     
 
     def to_msg(self,token, msg):
-        base = 'https://api.telegram.org/%s/' % token
+        base = 'https://api.telegram.org/bot%s/' % token
         url = up.urljoin(base, 'sendMessage')
         chat = self.get_chat()
         url += "?" + up.urlencode({'chat_id':chat['id'], 'text':msg})
@@ -37,7 +37,7 @@ class Message(dbobj):
         
     @classmethod
     def update_msg(cls, token):
-        base = 'https://api.telegram.org/%s/' % token
+        base = 'https://api.telegram.org/bot%s/' % token
         url = up.urljoin(base, 'getUpdates')
         logging.info(f"update url:{url}")
         res = to(url).json()
