@@ -33,7 +33,7 @@ class Message(dbobj):
         
     @classmethod
     def update_msg(cls, token):
-        base = 'https://api.telegram.org/%s/' % self.token
+        base = 'https://api.telegram.org/%s/' % token
         url = up.urljoin(base, 'getUpdates')
         res = to(self.url).json()
         if res['ok']:
