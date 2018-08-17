@@ -106,7 +106,10 @@ class  TokenTel(object):
                     print(f"call {com} : {args}")
                 f = self._map.get(com)
                 if f:
-                    f(*args)
+                    try:
+                        f(*args)
+                    except Exception as e:
+                        logging.info(str(e))
             time.sleep(self.interval)
             
 
@@ -114,7 +117,7 @@ class  TokenTel(object):
 def run_other_auth(token, auth_db):
     t = TokenTel(token, auth_db)
     t.reg_callback('reg', lambda x: update_auth(auth_db, x))
-    t.reg_callback('check', lambda x: Message.new(auth_db).to_msg(token, get_my_ip()))
+    t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, get_my_ip()))
     t.run()
 
 def main():
