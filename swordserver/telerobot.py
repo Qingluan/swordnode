@@ -108,11 +108,12 @@ class  TokenTel(object):
                 com, args = self.get_command(new_msg.msg_text)
                 f = self._map.get(com)
                 if f:
-                    print(f"call {com} : {args}")
+                    print(f"callback {com} : {args}")
                     try:
                         f(*args)
                     except Exception as e:
                         logging.info(str(e))
+                        print(f"err {str(e)}")
             time.sleep(self.interval)
             
 
