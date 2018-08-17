@@ -6,6 +6,7 @@ from mroylib.auth import Token
 import urllib.parse as up
 import json
 import os
+import logging
 import time
 
 class Bot(dbobj):
@@ -38,6 +39,7 @@ class Message(dbobj):
     def update_msg(cls, token):
         base = 'https://api.telegram.org/%s/' % token
         url = up.urljoin(base, 'getUpdates')
+        logging.info(f"update url:{url}")
         res = to(url).json()
         if res['ok']:
             for m in res['result']:
