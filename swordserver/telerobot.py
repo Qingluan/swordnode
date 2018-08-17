@@ -79,8 +79,7 @@ class  TokenTel(object):
     def get_command(self, msg_text):
         if msg_text.startswith('/'):
             token = msg_text.split()
-            if len(token) > 1:
-                return token[0][1:],token[1:]
+            return token[0][1:],token[1:]
         return '',''
     
     def reg_callback(self, com, function):
