@@ -124,7 +124,7 @@ def reg(auth_db, token, x):
         
 def run_other_auth(token, auth_db):
     t = TokenTel(token, auth_db)
-    t.reg_callback('reg', lambda x: partial(auth_db, token)(x))
+    t.reg_callback('reg', lambda x: partial(reg, auth_db, token)(x))
     t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, get_my_ip() + " √"))
     t.run()
 
