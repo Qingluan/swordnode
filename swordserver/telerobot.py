@@ -1,8 +1,10 @@
+# -*- coding: utf8 -*-
 from qlib.data import Cache,dbobj
 from qlib.net import to
 from qlib.io import GeneratorApi
 from mroylib.auth import Token
 
+from functools import partial
 import urllib.parse as up
 import json
 import os
@@ -113,11 +115,14 @@ class  TokenTel(object):
             time.sleep(self.interval)
             
 
+def reg(auth_db, token, x):
+    update_auth(auth_db, x)
+    Message.new(auth_db).to_msg(token, get_my_ip() + " reg : %s" % x)
         
 def run_other_auth(token, auth_db):
     t = TokenTel(token, auth_db)
-    t.reg_callback('reg', lambda x: update_auth(auth_db, x))
-    t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, get_my_ip()))
+    t.reg_callback('reg', lambda x: partial(auth_db, token)(x))
+    t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, get_my_ip() + " √"))
     t.run()
 
 def main():
