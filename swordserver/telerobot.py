@@ -62,7 +62,7 @@ class Message(dbobj):
 
 def update_auth(db,token):
     c = Cache(db)
-    t = c.query_one(phone='0')
+    t = c.query_one(Token, phone='0')
     if not t:
         t = Token(tp='tel', token='0', phone='0', hash_code=token, set_timeout=24*60)
     t.hash_code = token
@@ -126,7 +126,14 @@ def run_other_auth(token, auth_db):
     t = TokenTel(token, auth_db)
     t.reg_callback('reg', lambda x: partial(reg, auth_db, token)(x))
     t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, get_my_ip() + " √"))
+    t.reg_callback('update', updater)
     t.run()
+
+def updater(x, *cmds):
+    if 'github' in x:
+        os.popen('pip3 install -U git+https://github.com/%s.git && %s' % (x ,' '.join(cmds)))
+    else:
+        os.popen('pip3 uninstall -y %s && pip3 install %s -U --no-cache && %s' % (x, x ,' '.join(cmds)))
 
 def main():
     args = GeneratorApi({
