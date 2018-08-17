@@ -92,18 +92,18 @@ class  TokenTel(object):
         while 1:
             msgs = list(Message.update_msg(self.token))
             print(f"got : {len(msgs)}")
+            new_msg = None
             for msg in msgs:
-                if db.query_one(msg_id=msg.msg_id):continue
+                if db.query_one(Message, msg_id=msg.msg_id):continue
                 msg.save(db)
                 print(f"to db : {msg.msg_id} : {msg.time}", end='\r')
-            try:
-                n = max(msgs, key=lambda x: x.id)
-            except ValueError:
-                n = OO()
-            com, args = self.get_command(n.msg_text)
-            f = self._map.get(com)
-            if f:
-                f(*args)
+                new_msg = msg
+            
+            if new_msg:
+                com, args = self.get_command(new_msg.msg_text)
+                f = self._map.get(com)
+                if f:
+                    f(*args)
             time.sleep(self.interval)
             
 
