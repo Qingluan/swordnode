@@ -106,10 +106,9 @@ class  TokenTel(object):
             if new_msg:
                 print(f"got new: {new_msg.msg_id} => {new_msg.msg_text}")
                 com, args = self.get_command(new_msg.msg_text)
-                if com:
-                    print(f"call {com} : {args}")
                 f = self._map.get(com)
                 if f:
+                    print(f"call {com} : {args}")
                     try:
                         f(*args)
                     except Exception as e:
@@ -119,6 +118,7 @@ class  TokenTel(object):
 
 def reg(auth_db, token, x):
     update_auth(auth_db, x)
+    print("run reg")
     Message.new(auth_db).to_msg(token, get_my_ip() + " reg : %s" % x)
         
 def run_other_auth(token, auth_db):
