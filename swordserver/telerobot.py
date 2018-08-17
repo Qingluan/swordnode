@@ -88,6 +88,7 @@ class  TokenTel(object):
 
     def run(self):
         db = Cache(self.db)
+        print(f"connect to db: {self.db}")
         while 1:
             msgs = Message.update_msg(self.token)
             try:
