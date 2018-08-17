@@ -9,6 +9,8 @@ import os
 import logging
 import time
 
+logging.basicConfig(level=logging.INFO)
+
 class Bot(dbobj):
     pass
 class OO:
