@@ -10,6 +10,9 @@ import time
 
 class Bot(dbobj):
     pass
+class OO:
+    def __init__(self):
+        self.text = ""
 
 
 def get_my_ip():
@@ -86,7 +89,7 @@ class  TokenTel(object):
             try:
                 n = max(msgs, key=lambda x: x.id)
             except ValueError:
-                n = ''
+                n = OO()
             com, args = self.get_command(n.text)
             f = self._map.get(com)
             if f:
