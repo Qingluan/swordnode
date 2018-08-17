@@ -44,8 +44,11 @@ class Message(dbobj):
     @staticmethod
     def new(path):
         c = Cache(path)
-        f = max(c.query(Message), key=lambda x: x.id)
-        return f
+        try:
+            f = max(c.query(Message), key=lambda x: x.id)
+            return f
+        except ValueError:
+            return None
 
 
 def update_auth(db,token):
@@ -80,13 +83,17 @@ class  TokenTel(object):
         db = Cache(self.db)
         while 1:
             msgs = Message.update_msg(self.token)
-            n = max(msgs, key=lambda x: x.id)
+            try:
+                n = max(msgs, key=lambda x: x.id)
+            except ValueError:
+                n = ''
             com, args = self.get_command(n.text)
             f = self._map.get(com)
             if f:
                 f(*args)
             time.sleep(self.interval)
             db.save_all(*msgs)
+
         
 def run_other_auth(token, auth_db):
     t = TokenTel(token, auth_db)
