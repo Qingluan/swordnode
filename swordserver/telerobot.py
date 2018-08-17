@@ -13,7 +13,7 @@ class Bot(dbobj):
     pass
 class OO:
     def __init__(self):
-        self.text = ""
+        self.msg_text = ""
 
 
 def get_my_ip():
@@ -92,7 +92,7 @@ class  TokenTel(object):
                 n = max(msgs, key=lambda x: x.id)
             except ValueError:
                 n = OO()
-            com, args = self.get_command(n.text)
+            com, args = self.get_command(n.msg_text)
             f = self._map.get(com)
             if f:
                 f(*args)
