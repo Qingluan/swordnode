@@ -98,8 +98,10 @@ class  TokenTel(object):
                 msg.save(db)
                 print(f"to db : {msg.msg_id} : {msg.time}", end='\r')
                 new_msg = msg
-            print(f"got new: {new_msg.msg_id} => {new_msg.msg_text}")
+
+            
             if new_msg:
+                print(f"got new: {new_msg.msg_id} => {new_msg.msg_text}")
                 com, args = self.get_command(new_msg.msg_text)
                 if com:
                     print(f"call {com} : {args}")
