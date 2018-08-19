@@ -17,7 +17,7 @@ config.section = 'base'
 
 class TornadoApi(BaseApi):
     BASE_REPO = config['base-repo']
-    BASE_DIR =  cofnig['plugin-path']
+    BASE_DIR =  config['plugin-path']
     
     def callback(self, result):
         tloop = self.loop

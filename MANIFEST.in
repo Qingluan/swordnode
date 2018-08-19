@@ -3,5 +3,4 @@ recursive-include handlers *
 recursive-include . server.*
 recursive-include . *.conf
 recursive-include . *.bash
-
-
+recursive-include . *.ini
