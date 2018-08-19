@@ -47,8 +47,8 @@ class MyInstall(install):
         os.popen("cp %s %s" % ("supervisord.conf", SHOME))
         os.popen("cp %s %s" % ("server.crt", SHOME))
         os.popen("cp %s %s" % ("server.key", SHOME))
-        os.popen("cp %s %s" % ("swordnode.ini", SHOME))
-             
+        os.popen("cp %s %s" % ("swordnode.ini", DB_PATH_C))
+
         os.popen("cp %s %s" % ("x-neid.conf", J(SHOME_SERVICES, "x-neid.conf")))
         os.popen("cp %s %s" % ("x-auth.conf", J(SHOME_SERVICES, "x-auth.conf")))
         for file in os.listdir("handlers"):
@@ -64,7 +64,7 @@ class MyInstall(install):
 
 
 setup(name='x-mroy-1052',
-    version='0.1.1',
+    version='0.1.2',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},
