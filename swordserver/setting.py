@@ -26,7 +26,7 @@ if not E(os.path.expanduser("~/.config/SwordNode/user")):
 if not E(SHOME):
     os.mkdir(SHOME)
 
-PLUGIN_PATH = config['plugins']
+PLUGIN_PATH = config['plugin-path']
 if not E(PLUGIN_PATH):
     os.mkdir(os.path.join(SHOME, 'plugins'))
     os.mkdir(os.path.join(PLUGIN_PATH, 'Plugins'))
