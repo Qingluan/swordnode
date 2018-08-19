@@ -141,7 +141,7 @@ def main():
     config = Config(name='swordnode.ini')
     config.section = 'user'
     token = config['token']
-    db = config['db']
+    db = config['user_db']
     if token and db:
         if os.path.exists(args.db):
             run_other_auth(args.token, args.db)
