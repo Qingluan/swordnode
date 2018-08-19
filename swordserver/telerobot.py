@@ -143,6 +143,7 @@ def main():
     token = config['token']
     db = config['tel_user_db']
     if token and db:
-        if os.path.exists(db):
-            run_other_auth(token, db)
+        if not os.path.exists(db):
+            with open(db ,'w') as fp:pass
+        run_other_auth(token, db)
 
