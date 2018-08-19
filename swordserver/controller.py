@@ -127,6 +127,7 @@ class IndexHandler(BaseHandler):
         logging.error(f"Permission : {api.Permission}")
         if api.Permission == "auth":
             key = parser.get_parameter("Api-key", l='head')
+            logging.info(f"load db: {self.settings['user_db_path']} ")
             _auth = Authentication(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
             if _auth.if_auth(key.strip()):
                 res = api.run(*parser.args, **parser.kwargs)
