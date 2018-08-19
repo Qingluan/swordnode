@@ -35,8 +35,8 @@ if not E(PLUGIN_PATH):
 sys.path += [PLUGIN_PATH]
 DB_PATH = config['user_db']
 
-config.seciton = 'user'
-USER_DB_PATH = config['user_db']
+config.section = 'user'
+USER_DB_PATH = config['tel_user_db']
 
 if not E(os.path.dirname(DB_PATH)):
     os.mkdir(os.path.dirname(DB_PATH))
