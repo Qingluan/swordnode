@@ -18,7 +18,7 @@ import os
 
 con = Config(name='swordnode.ini')
 con.section = 'user'
-auth.USER_DB_PATH =  con['user_db']
+auth.USER_DB_PATH =  con['tel_user_db']
 
 logging.basicConfig(level=logging.INFO)
 
