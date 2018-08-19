@@ -68,7 +68,7 @@ def update_auth(db,token):
     if not t:
         t = Token(tp='tel', token='0', phone='0', hash_code=token, set_timeout=24*60)
     t.hash_code = token
-    
+    print(t.hash_code)
     res = t.save(c)
     logging.info(f"db handle : {res}")
 
@@ -121,7 +121,7 @@ class  TokenTel(object):
 
 def reg(auth_db, token, x):
     update_auth(auth_db, x)
-    print("run reg")
+    logging.info(f"run reg {x} {auth_db}")
     Message.new(auth_db).to_msg(token, get_my_ip() + " reg : %s" % x)
         
 def run_other_auth(token, auth_db):
