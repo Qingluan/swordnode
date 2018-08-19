@@ -33,10 +33,10 @@ if not E(PLUGIN_PATH):
     with open(J(J(PLUGIN_PATH, 'Plugins'), '__init__.py'), 'w') as fp: pass
 
 sys.path += [PLUGIN_PATH]
-DB_PATH = config['db_path']
+DB_PATH = config['user_db']
 
 config.seciton = 'user'
-USER_DB_PATH = config['db_path']
+USER_DB_PATH = config['user_db']
 
 if not E(os.path.dirname(DB_PATH)):
     os.mkdir(os.path.dirname(DB_PATH))
