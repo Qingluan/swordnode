@@ -47,6 +47,7 @@ class MyInstall(install):
         os.popen("cp %s %s" % ("supervisord.conf", SHOME))
         os.popen("cp %s %s" % ("server.crt", SHOME))
         os.popen("cp %s %s" % ("server.key", SHOME))
+        os.popen("cp %s %s" % ("swordnode.ini", SHOME))
              
         os.popen("cp %s %s" % ("x-neid.conf", J(SHOME_SERVICES, "x-neid.conf")))
         for file in os.listdir("handlers"):

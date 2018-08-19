@@ -10,13 +10,15 @@ from .controller import *
 
 # load ui modules
 import swordserver.ui as ui
+from mroylib.config import Config
 import sys
 E =  os.path.exists
 J = os.path.join
-if not E(os.path.expanduser("~/.config")):
-    os.mkdir(os.path.expanduser("~/.config"))
-SHOME = os.path.expanduser("~/.config/SwordNode")
-USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
+config = Config(name='swordnode.ini')
+config.seciton = 'base'
+
+SHOME = config['BASE']
+
 
 if not E(os.path.expanduser("~/.config/SwordNode/user")):
     os.mkdir(os.path.expanduser("~/.config/SwordNode/user"))
@@ -24,15 +26,17 @@ if not E(os.path.expanduser("~/.config/SwordNode/user")):
 if not E(SHOME):
     os.mkdir(SHOME)
 
-PLUGIN_PATH = os.path.join(SHOME, 'plugins')
+PLUGIN_PATH = config['plugins']
 if not E(PLUGIN_PATH):
     os.mkdir(os.path.join(SHOME, 'plugins'))
     os.mkdir(os.path.join(PLUGIN_PATH, 'Plugins'))
     with open(J(J(PLUGIN_PATH, 'Plugins'), '__init__.py'), 'w') as fp: pass
 
 sys.path += [PLUGIN_PATH]
+DB_PATH = config['db_path']
 
-DB_PATH = os.path.expanduser("~/.config/SwordNode/db.sql")
+config.seciton = 'user'
+USER_DB_PATH = config['db_path']
 
 if not E(os.path.dirname(DB_PATH)):
     os.mkdir(os.path.dirname(DB_PATH))

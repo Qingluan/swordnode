@@ -36,18 +36,21 @@ reload() {
 start() {
     echo -n "[+] Start Server "
     supervisorctl start x-neid
+    supervisorctl start x-auth
     echo " ok"
 }
 
 stop() {
     echo -n "[+] Stop Server "
     supervisorctl stop x-neid
+    supervisorctl stop x-auth
     echo " ok"
 }
 
 restart() {
     echo -n "[+] Restart Server "
-    supervisorctl restart x-neid   
+    supervisorctl restart x-neid
+    supervisorctl restart x-auth
     echo " ok"
 }
 

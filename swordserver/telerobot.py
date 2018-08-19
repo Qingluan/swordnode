@@ -3,13 +3,15 @@ from qlib.data import Cache,dbobj
 from qlib.net import to
 from qlib.io import GeneratorApi
 from mroylib.auth import Token
-
+from mroylib.config import Config
 from functools import partial
 import urllib.parse as up
 import json
 import os
 import logging
 import time
+
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -136,11 +138,11 @@ def updater(x, *cmds):
         os.popen('pip3 uninstall -y %s && pip3 install %s -U --no-cache && %s' % (x, x ,' '.join(cmds)))
 
 def main():
-    args = GeneratorApi({
-        'token': "set token",
-        'db': 'set db path',
-    })
-    if args.token and args.db:
+    config = Config(name='swordnode.ini')
+    config.section = 'user'
+    token = config['token']
+    db = config['db']
+    if token and db:
         if os.path.exists(args.db):
             run_other_auth(args.token, args.db)
 

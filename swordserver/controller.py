@@ -12,11 +12,13 @@ from .libs import TornadoArgs
 
 from mroylib import auth
 from mroylib.auth import Authentication
+from mroylib.config import Config
 import logging
 import os
 
-_USER_DB_PATH = os.path.expanduser("~/.config/SwordNode/user/.tel.sql")
-auth.USER_DB_PATH =  _USER_DB_PATH
+con = Config(name='swordnode.ini')
+con.section = 'user'
+auth.USER_DB_PATH =  con['user_db']
 
 logging.basicConfig(level=logging.INFO)
 

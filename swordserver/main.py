@@ -9,10 +9,14 @@ from .setting import  appication, port
 from qlib.io import GeneratorApi
 import os
 import ssl
+from mroylib.config import Config
 J = os.path.join
-HOME = os.path.expanduser("~/.config/SwordNode/")
-cak = J(HOME, 'server.key')
-cac = J(HOME, 'server.crt')
+
+
+config = Config(name='swordnode.ini')
+config.section = "ssl"
+cak = config['server.key']
+cac = config['server.crt']
 
 
 

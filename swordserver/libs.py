@@ -8,11 +8,15 @@ import sys
 import logging
 
 
-logging.basicConfig(level=logging.INFO)
+config = Config(name='swordnode.ini')
+config.section = 'log'
+
+logging.basicConfig(level=getattr(logging, config['level'], 'INFO'))
+config.section = 'base'
 
 class TornadoApi(BaseApi):
-    BASE_REPO = 'https://github.com/Qingluan/x-plugins.git'
-    BASE_DIR =  os.path.expanduser("~/.config/SwordNode/plugins")
+    BASE_REPO = config['base-repo']
+    BASE_DIR =  cofnig['plugin-path']
     
     def callback(self, result):
         tloop = self.loop
