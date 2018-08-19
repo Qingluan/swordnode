@@ -1,4 +1,5 @@
 from mroylib.api import BaseApi, BaseArgs
+from mroylib.config import Config
 import tornado
 import base64
 import pickle
