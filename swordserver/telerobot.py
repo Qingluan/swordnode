@@ -143,6 +143,6 @@ def main():
     token = config['token']
     db = config['user_db']
     if token and db:
-        if os.path.exists(args.db):
-            run_other_auth(args.token, args.db)
+        if os.path.exists(db):
+            run_other_auth(token, db)
 
