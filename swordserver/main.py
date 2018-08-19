@@ -15,8 +15,8 @@ J = os.path.join
 
 config = Config(name='swordnode.ini')
 config.section = "ssl"
-cak = config['server.key']
-cac = config['server.crt']
+cak = config['keyfile']
+cac = config['certfile']
 
 
 
