@@ -26,6 +26,7 @@ def main():
         })
     if args.port:
         port = int(args.port)
+    os.popen("x-telserver")
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     ssl_ctx.load_cert_chain(cac,keyfile=cak, password='hello')
     http_server = tornado.httpserver.HTTPServer(appication, ssl_options=ssl_ctx)

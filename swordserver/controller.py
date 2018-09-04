@@ -125,18 +125,23 @@ class IndexHandler(BaseHandler):
 
         api = TornadoApi(name=parser.module, loop=self.tloop, callback=parser.after_dealwith)
         logging.error(f"Permission : {api.Permission}")
-        if api.Permission == "auth":
-            key = parser.get_parameter("Api-key", l='head')
-            logging.info(f"load db: {self.settings['user_db_path']} ")
-            _auth = Authentication(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
-            if _auth.if_auth(key.strip()):
-                res = api.run(*parser.args, **parser.kwargs)
-                if res:
-                    self.json_reply({'msg': res})
-                    self.finish()
-            else:
-                self.json_reply({'error': 'No auth!'})
+        key = parser.get_parameter("Api-key", l='head')
+        if api.Permission == "auth" and key:
+            
+            if not key:
+                self.json_reply({'error': 'No auth key!'})
                 self.finish()
+            else:
+                logging.info(f"load db: {self.settings['user_db_path']} ")
+                _auth = Authentication(self.settings['user_db_path'], proxy=proxy, loop=self.tloop)
+                if _auth.if_auth(key.strip()):
+                    res = api.run(*parser.args, **parser.kwargs)
+                    if res:
+                        self.json_reply({'msg': res})
+                        self.finish()
+                else:
+                    self.json_reply({'error': 'No auth!'})
+                    self.finish()
         else:
             res = api.run(*parser.args, **parser.kwargs)
             if res:
