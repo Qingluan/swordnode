@@ -167,7 +167,7 @@ class Router:
             ss_config['password'] = password
             del ss_config['port_password']
 
-        Message.new(auth_db).to_msg(token, '/ss-config ' + base64.b64encode(json.dumps(ss_config)).decode('utf8'))
+        Message.new(auth_db).to_msg(token, '/ss-config ' + base64.b64encode(json.dumps(ss_config).encode('utf8')).decode('utf8'))
 
     @staticmethod
     def collection_config(auth_db, token, config_str):
