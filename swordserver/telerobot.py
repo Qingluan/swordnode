@@ -161,7 +161,8 @@ class Router:
 
         ss_config['server'] = get_my_ip()
         if 'port_password' in ss_config:
-            port,password = random.choice(ss_config['port_password'].items())
+            cc = ss_config['port_password'].items()
+            port,password = cc[random.randint(0, len(cc))]
             ss_config['server_port'] = port
             ss_config['password'] = password
             del ss_config['port_password']
@@ -234,10 +235,13 @@ def add_services(auth_db, token, file_b64, ip=None):
 def help(auth_db,token):
     doc = """
     you can :
-        /reg xxx    # to change server's rpc token.
-        /check      # to ping all online server.
-        /ss_update  # to let all server send it self's config.
-        /account    # to change vultr account token.
+        /reg xxx        # to change server's rpc token.
+        /check          # to ping all online server.
+        /ss_update      # to let all server send it self's config.
+        /help           # to change vultr account token.
+        /list           # list all service in this server.
+        /add  [http://xxx/ base64_str] ip
+                        # to add file to run bash , you can type file address or file content's base str
     """
     Message.new(auth_db).to_msg(token, doc)
         
