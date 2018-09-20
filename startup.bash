@@ -37,6 +37,7 @@ start() {
     echo -n "[+] Start Server "
     supervisorctl start x-neid
     supervisorctl start x-auth
+    supervisorctl start x-node-test
     echo " ok"
 }
 
@@ -44,6 +45,7 @@ stop() {
     echo -n "[+] Stop Server "
     supervisorctl stop x-neid
     supervisorctl stop x-auth
+    supervisorctl stop x-node-test
     echo " ok"
 }
 
@@ -51,6 +53,7 @@ restart() {
     echo -n "[+] Restart Server "
     supervisorctl restart x-neid
     supervisorctl restart x-auth
+    supervisorctl restart x-node-test
     echo " ok"
 }
 

@@ -10,7 +10,9 @@ import json
 import os
 import logging
 import time
-
+import random
+import base64
+from hashlib import md5
 
 
 logging.basicConfig(level=logging.INFO)
@@ -77,12 +79,19 @@ def update_auth(db,token):
 # logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
 class  TokenTel(object):
+
+    _my_ip = None
     """docstring for  TokenTel"""
-    def __init__(self, token, db, interval=10):
+
+    def __init__(self, token, db, interval=5):
         self.token = token
         self.db = db
         self._map = {}
         self.interval = interval
+        if not self._my_ip:
+            TokenTel._my_ip = get_my_ip()
+            self._my_ip = TokenTel._my_ip
+
         
     def get_command(self, msg_text):
         if msg_text.startswith('/'):
@@ -121,23 +130,98 @@ class  TokenTel(object):
             time.sleep(self.interval)
             
 
+class Router:
+
+    @staticmethod
+    def switch_router(auth, token, x):
+        if 'token ->' in os.popen("x-ea-test -t %s " % x).read():
+            Message.new(auth).to_msg(token, 'switch vultr ok')
+
+    @staticmethod
+    def config_send(auth_db, token):
+        ss_config = {}
+        if os.path.exists('/etc/shadowsocks.json'):
+            with open('/etc/shadowsocks.json') as fp:
+                ss_config = json.load(fp)
+        else:
+            p = 13000 + random.randint(1, 9)
+            passwd = 'thefoolish' + str(p - 13000)
+            ss_config = {
+                'server':'0.0.0.0',
+                'server_port': random.randint(1, 9),
+                'password':passwd,
+                'method': 'aes-256-cfb',
+            }
+
+        ss_config.update['server'] = get_my_ip()
+        if 'port_password' in ss_config:
+            port,password = random.choice(ss_config['port_password'].items())
+            ss_config['server_port'] = port
+            ss_config['password'] = password
+            del ss_config['port_password']
+
+        Message.new(auth_db).to_msg(token, '/ss-config ' + base64.b64encode(json.dumps(ss_config)).decode('utf8'))
+
+    @staticmethod
+    def collection_config(auth_db, token, config_str):
+        ss = base64.b64decode(config_str.encode('utf8'))
+        ip = json.loads(ss.decode('utf8'))['server']
+        t = TokenTel(token, auth_db)
+        if ip == t._my_ip:
+            return
+        md5_str = md5(ss).hexdigest()
+        
+        if not os.path.exists(os.path.expanduser("~/.config")):
+            os.mkdir(os.path.expanduser("~/.config"))
+        
+        if not os.path.exists(os.path.expanduser("~/.config/seed")):
+            os.mkdir(os.path.expanduser("~/.config/seed"))
+        
+        if not os.path.exists(os.path.expanduser("~/.config/seed/shadowsocks")):
+            os.mkdir(os.path.expanduser("~/.config/seed/shadowsocks"))
+        fname = os.path.join(os.path.expanduser("~/.config/seed/shadowsocks"), md5_str + ".json")
+        with open(fname, 'w') as fp:
+            fp.write(ss.decode('utf8'))
+
+        Message.new(auth_db).to_msg(token, "Collect: %s" % ip)
+
+
 def reg(auth_db, token, x):
     update_auth(auth_db, x)
     logging.info(f"run reg {x} {auth_db}")
     Message.new(auth_db).to_msg(token, get_my_ip() + " reg : %s" % x)
+
+
+def help(auth_db,token):
+    doc = """
+    you can :
+        /reg xxx    # to change server's rpc token.
+        /check      # to ping all online server.
+        /ss-update  # to let all server send it self's config.
+        /switch     # to change vultr account token.
+    """
+    Message.new(auth_db).to_msg(token, doc)
         
 def run_other_auth(token, auth_db):
+
     t = TokenTel(token, auth_db)
     t.reg_callback('reg', lambda x: partial(reg, auth_db, token)(x))
-    t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, get_my_ip() + " √"))
+    t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, t._my_ip + " √"))
     t.reg_callback('update', updater)
+    t.reg_callback('ss-config', partial(Router.collection_config, auth_db, token))
+    t.reg_callback('ss-update', lambda :partial(Router.config_send, auth_db, token)())
+    t.reg_callback('switch', partial(Router.switch_router, auth_db, token))
+    t.reg_callback('switch', partial(help, auth_db, token))
     t.run()
+
+
 
 def updater(x, *cmds):
     if 'github' in x:
         os.popen('pip3 install -U git+https://github.com/%s.git && %s' % (x ,' '.join(cmds)))
     else:
         os.popen('pip3 uninstall -y %s && pip3 install %s -U --no-cache && %s' % (x, x ,' '.join(cmds)))
+
 
 def main():
     config = Config(name='swordnode.ini')

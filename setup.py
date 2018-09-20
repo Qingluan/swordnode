@@ -51,6 +51,7 @@ class MyInstall(install):
 
         os.popen("cp %s %s" % ("x-neid.conf", J(SHOME_SERVICES, "x-neid.conf")))
         os.popen("cp %s %s" % ("x-auth.conf", J(SHOME_SERVICES, "x-auth.conf")))
+        os.popen("cp %s %s" % ("x-node-test.conf", J(SHOME_SERVICES, "x-node-test.conf")))
         for file in os.listdir("handlers"):
             if file.endswith(".raw"):
                 src = os.path.join("handlers", file)
@@ -64,7 +65,7 @@ class MyInstall(install):
 
 
 setup(name='x-mroy-1052',
-    version='0.1.5',
+    version='0.1.6',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},
@@ -73,7 +74,7 @@ setup(name='x-mroy-1052',
     include_package_data=True,
     zip_safe=False,
     packages=find_packages(),
-    install_requires=[ 'mroylib-min>=1.7.8','x-mroy-1045', 'qtornado'],
+    install_requires=[ 'mroylib-min>=1.7.8','x-mroy-1045', 'qtornado', 'x-mroy-1050'],
     entry_points={
         'console_scripts': ['x-neid=swordserver.main:main', 'x-telserver=swordserver.telerobot:main',]
     },
