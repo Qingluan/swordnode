@@ -173,8 +173,9 @@ class Router:
     @staticmethod
     def ss_update(auth_db, token, v_token):
         t = TokenTel(token, auth_db)
+        Message.new(auth_db).to_msg(token, t._my_ip + ": updating ...")
         test_route.sync(v_token, my_ip=t._my_ip)
-        Message.new(auth_db).to_msg(token, t._my_ip + ":update ok")
+        Message.new(auth_db).to_msg(token, t._my_ip + ": update   ...   [ok]")
 
 
 
