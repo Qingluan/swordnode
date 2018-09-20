@@ -13,6 +13,7 @@ import time
 import random
 import base64
 from hashlib import md5
+from shadowsocks_extension import test_route
 
 SEVICES_PATH = os.path.expanduser("~/.config/SwordNode/services")
 
@@ -113,7 +114,7 @@ class  TokenTel(object):
             for msg in msgs:
                 if db.query_one(Message, msg_id=msg.msg_id):continue
                 msg.save(db)
-                print(f"to db : {msg.msg_id} : {msg.time}", end='\r')
+                # print(f"to db : {msg.msg_id} : {msg.time}", end='\r')
                 new_msg = msg
 
             
@@ -170,6 +171,14 @@ class Router:
         Message.new(auth_db).to_msg(token, '/ss-config ' + base64.b64encode(json.dumps(ss_config).encode('utf8')).decode('utf8'))
 
     @staticmethod
+    def ss_update(auth_db, token, v_token):
+        t = TokenTel(token, auth_db)
+        test_route.sync(v_token)
+        Message.new(auth_db).to_msg(token, t._my_ip + "update ok")
+
+
+
+    @staticmethod
     def collection_config(auth_db, token, config_str):
         ss = base64.b64decode(config_str.encode('utf8'))
         ip = json.loads(ss.decode('utf8'))['server']
@@ -207,6 +216,14 @@ def list_services(auth_db, token, ip=None):
     
     res = '\n'.join(os.listdir(SEVICES_PATH))
     Message.new(auth_db).to_msg(token, t._my_ip + ": %s" % res)    
+
+def show_status(auth_db, token, service,ip=None):
+    t = TokenTel(token, auth_db)
+    if ip and ip != t._my_ip:
+        return
+    res = os.popen("supervisorctl status %s "% service).read()
+    Message.new(auth_db).to_msg(token, t._my_ip + ":\n%s" % res) 
+
 
 def add_services(auth_db, token, file_b64, ip=None):
     t = TokenTel(token, auth_db)
@@ -252,8 +269,9 @@ def run_other_auth(token, auth_db):
     t.reg_callback('reg', lambda x: partial(reg, auth_db, token)(x))
     t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, t._my_ip + " √"))
     t.reg_callback('update', updater)
-    t.reg_callback('ss-config', partial(Router.collection_config, auth_db, token))
-    t.reg_callback('ss_update', lambda :partial(Router.config_send, auth_db, token)())
+    t.reg_callback('ss_update', partial(Router.ss_update, auth_db, token))
+    t.reg_callback('show', partial(Router.config_send, auth_db, token))
+    t.reg_callback('status', partial(show_status, auth_db, token))
     # t.reg_callback('account', partial(Router.switch_router, auth_db, token))
     t.reg_callback('help', partial(help, auth_db, token))
     t.reg_callback('list', partial(list_services, auth_db, token))
