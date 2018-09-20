@@ -161,7 +161,7 @@ class Router:
 
         ss_config['server'] = get_my_ip()
         if 'port_password' in ss_config:
-            cc = ss_config['port_password'].items()
+            cc = list(ss_config['port_password'].items())
             port,password = cc[random.randint(0, len(cc))]
             ss_config['server_port'] = port
             ss_config['password'] = password
@@ -202,6 +202,7 @@ def reg(auth_db, token, x):
 def list_services(auth_db, token, ip=None):
     t = TokenTel(token, auth_db)
     if ip and ip != t._my_ip:
+        print("not my ip:",ip)
         return
     
     res = '\n'.join(os.listdir(SEVICES_PATH))
