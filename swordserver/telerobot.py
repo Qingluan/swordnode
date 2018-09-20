@@ -14,6 +14,7 @@ import random
 import base64
 from hashlib import md5
 
+SEVICES_PATH = os.path.expanduser("~/.config/SwordNode/services")
 
 logging.basicConfig(level=logging.INFO)
 
@@ -132,10 +133,15 @@ class  TokenTel(object):
 
 class Router:
 
-    @staticmethod
-    def switch_router(auth, token, x):
-        if 'token ->' in os.popen("x-ea-test -t %s " % x).read():
-            Message.new(auth).to_msg(token, 'switch vultr ok')
+    # @staticmethod
+    # def switch_router(auth, token, x):
+    #     if 'token ->' in os.popen("x-ea-test -t %s " % x).read():
+    #         Message.new(auth).to_msg(token, 'switch vultr ok')
+
+    # @staticmethod
+    # def account_info(auth, token):
+    #     res = requests.get("https://api.vultr.com/v1/account/info", headers={'API-Key': token}).json()
+    #     Message.new(auth).to_msg(token, res)
 
     @staticmethod
     def config_send(auth_db, token):
@@ -144,16 +150,16 @@ class Router:
             with open('/etc/shadowsocks.json') as fp:
                 ss_config = json.load(fp)
         else:
-            p = 13000 + random.randint(1, 9)
-            passwd = 'thefoolish' + str(p - 13000)
+            port = 13000 + random.randint(1, 9)
+            passwd = 'thefoolish' + str(port - 13000)
             ss_config = {
                 'server':'0.0.0.0',
-                'server_port': random.randint(1, 9),
+                'server_port': port,
                 'password':passwd,
                 'method': 'aes-256-cfb',
             }
 
-        ss_config.update['server'] = get_my_ip()
+        ss_config['server'] = get_my_ip()
         if 'port_password' in ss_config:
             port,password = random.choice(ss_config['port_password'].items())
             ss_config['server_port'] = port
@@ -168,6 +174,7 @@ class Router:
         ip = json.loads(ss.decode('utf8'))['server']
         t = TokenTel(token, auth_db)
         if ip == t._my_ip:
+            print("[+]", 'this is my ip.')
             return
         md5_str = md5(ss).hexdigest()
         
@@ -191,14 +198,46 @@ def reg(auth_db, token, x):
     logging.info(f"run reg {x} {auth_db}")
     Message.new(auth_db).to_msg(token, get_my_ip() + " reg : %s" % x)
 
+def list_services(auth_db, token, ip=None):
+    t = TokenTel(token, auth_db)
+    if ip and ip != t._my_ip:
+        return
+    
+    res = '\n'.join(os.listdir(SEVICES_PATH))
+    Message.new(auth_db).to_msg(token, t._my_ip + ": %s" % res)    
+
+def add_services(auth_db, token, file_b64, ip=None):
+    t = TokenTel(token, auth_db)
+    if ip and ip != t._my_ip:
+        return
+    
+    
+    if file_b64.startswith('http'):
+        with open('/tmp/run.sh', 'wb') as fp:
+            r = requets.get(file_b64, stream=True)
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk: fp.write(chunk)
+    else:
+        with open('/tmp/run.sh', 'wb') as fp:
+            try:
+                c = base64.b64decode(file_b64.encode('utf-8'))
+                fp.write(c)
+            except Exception as e :
+                res = str(e)            
+                Message.new(auth_db).to_msg(token, t._my_ip + ": %s" % res)
+                return 
+
+    res = os.popen('bash /tmp/run.sh').read()
+    Message.new(auth_db).to_msg(token, t._my_ip + ": %s" % res)    
+
 
 def help(auth_db,token):
     doc = """
     you can :
         /reg xxx    # to change server's rpc token.
         /check      # to ping all online server.
-        /ss-update  # to let all server send it self's config.
-        /switch     # to change vultr account token.
+        /ss_update  # to let all server send it self's config.
+        /account    # to change vultr account token.
     """
     Message.new(auth_db).to_msg(token, doc)
         
@@ -209,9 +248,11 @@ def run_other_auth(token, auth_db):
     t.reg_callback('check', lambda : Message.new(auth_db).to_msg(token, t._my_ip + " √"))
     t.reg_callback('update', updater)
     t.reg_callback('ss-config', partial(Router.collection_config, auth_db, token))
-    t.reg_callback('ss-update', lambda :partial(Router.config_send, auth_db, token)())
-    t.reg_callback('switch', partial(Router.switch_router, auth_db, token))
-    t.reg_callback('switch', partial(help, auth_db, token))
+    t.reg_callback('ss_update', lambda :partial(Router.config_send, auth_db, token)())
+    # t.reg_callback('account', partial(Router.switch_router, auth_db, token))
+    t.reg_callback('help', partial(help, auth_db, token))
+    t.reg_callback('list', partial(list_services, auth_db, token))
+    t.reg_callback('add', partial(add_services, auth_db, token))
     t.run()
 
 
