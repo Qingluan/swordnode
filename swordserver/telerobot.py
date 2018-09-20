@@ -174,7 +174,7 @@ class Router:
     def ss_update(auth_db, token, v_token):
         t = TokenTel(token, auth_db)
         test_route.sync(v_token)
-        Message.new(auth_db).to_msg(token, t._my_ip + "update ok")
+        Message.new(auth_db).to_msg(token, t._my_ip + ":update ok")
 
 
 
@@ -253,13 +253,15 @@ def add_services(auth_db, token, file_b64, ip=None):
 def help(auth_db,token):
     doc = """
     you can :
-        /reg xxx        # to change server's rpc token.
-        /check          # to ping all online server.
-        /ss_update      # to let all server send it self's config.
-        /help           # to change vultr account token.
-        /list           # list all service in this server.
+        /reg xxx         # to change server's rpc token.
+        /check           # to ping all online server.
+        /show            # to ping all online server.
+        /ss_update       # to let all server send it self's config.
+        /status services #
+        /help            # to change vultr account token.
+        /list            # list all service in this server.
         /add  [http://xxx/ base64_str] ip
-                        # to add file to run bash , you can type file address or file content's base str
+                         # to add file to run bash , you can type file address or file content's base str
     """
     Message.new(auth_db).to_msg(token, doc)
         
