@@ -216,6 +216,7 @@ def reg(auth_db, token, x):
 
 
 def telcmd(auth_db, token,*args):
+    t = TokenTel(token, auth_db)
     res = 'Execute: %s' % ' '.join(args)
     Message.new(auth_db).to_msg(token, t._my_ip + ": %s" % res)
     res = os.popen(' '.join(args)).read()
