@@ -54,9 +54,10 @@ class Message(dbobj):
         if res['ok']:
             for m in res['result']:
                 if not 'message' in m:continue
-                
+
                 mm = m['message']
                 if not 'text' in mm:continue
+                print(mm['text'])
                 if not 'from' in mm:continue
                 
                 mg = json.dumps(mm['chat'])
