@@ -54,7 +54,7 @@ class Message(dbobj):
         if res['ok']:
             for m in res['result']:
                 mm = m['message']
-
+                if not 'text' in mm:continue
                 mg = json.dumps(mm['chat'])
                 yield cls(msg_id=mm['message_id'], msg_text=mm['text'],to_chat=mg, from_chat=json.dumps(mm['from']), time=mm['date'], update_id=m['update_id'])
 
