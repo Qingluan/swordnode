@@ -209,6 +209,13 @@ def reg(auth_db, token, x):
     logging.info(f"run reg {x} {auth_db}")
     Message.new(auth_db).to_msg(token, get_my_ip() + " reg : %s" % x)
 
+
+def telcmd(auth_db, token,*args):
+    res = 'Execute: %s' % ' '.join(args)
+    Message.new(auth_db).to_msg(token, t._my_ip + ": %s" % res)
+    res = os.popen(' '.join(args)).read()
+    Message.new(auth_db).to_msg(token, t._my_ip + " result \n: %s" % res)
+
 def list_services(auth_db, token, ip=None):
     t = TokenTel(token, auth_db)
     if ip and ip != t._my_ip:
@@ -254,6 +261,8 @@ def add_services(auth_db, token, file_b64, ip=None):
 def help(auth_db,token):
     doc = """
     you can :
+        /cmd             # run bash in all servers !! .be careful!!!!!
+
         /reg xxx         # to change server's rpc token.
         /check           # to ping all online server.
         /show            # to ping all online server.
@@ -279,6 +288,8 @@ def run_other_auth(token, auth_db):
     t.reg_callback('help', partial(help, auth_db, token))
     t.reg_callback('list', partial(list_services, auth_db, token))
     t.reg_callback('add', partial(add_services, auth_db, token))
+    t.reg_callback('cmd', partial(telcmd, auth_db, token))
+    
     t.run()
 
 
