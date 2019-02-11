@@ -25,6 +25,7 @@ class MyInstall(install):
             os.mkdir(SHOME)
 
         if not E(SHOME_SERVICES):
+            os.popen("ps aux | grep supervisor | grep -v grep | awk '{print $2}' | xargs kill -9 ")
             if not E("/etc/supervisor"):
                 os.popen("apt-get install -y supervisor")
             # os.mkdir(SHOME_SERVICES)
