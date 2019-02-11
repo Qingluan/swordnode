@@ -4,10 +4,12 @@ if [ !  -d /var/log/supervisord ];then
     mkdir /var/log/supervisord
 fi
 
+SUPER_CONF = /etc/supervisor/conf.d
 
 if [ ! "$(which supervisord)" ];then
     echo -n "install supervisord ..."
-    pip3 install -U git+https://github.com/Supervisor/supervisor.git 1>/dev/null 2>/dev/null;
+    #pip3 install -U git+https://github.com/Supervisor/supervisor.git 1>/dev/null 2>/dev/null;
+    apt install -y  supervisor 1>/dev/null 2>/dev/null
     echo  " ok"
 fi
 
@@ -18,7 +20,8 @@ supervisorctl update;
 
 if [ ! "$(ps aux | grep supervisord | grep -v grep | xargs )" ];then
     echo -n  "[+] Startup supervisord"
-    supervisord -c ~/.config/SwordNode/supervisord.conf
+    # supervisord -c ~/.config/SwordNode/supervisord.conf
+    service supervisor start
     if [ $? -eq 0 ];then 
         echo  " successful"
     else

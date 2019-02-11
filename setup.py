@@ -11,7 +11,7 @@ E = os.path.exists
 BHOME = os.path.expanduser("~/.config")
 SHOME = os.path.expanduser("~/.config/SwordNode")
 J = os.path.join
-SHOME_SERVICES = J(SHOME, 'services')
+SHOME_SERVICES = J(SHOME, '/etc/supervisor/conf.d')
 
 class MyInstall(install):
     def run(self):
@@ -25,7 +25,9 @@ class MyInstall(install):
             os.mkdir(SHOME)
 
         if not E(SHOME_SERVICES):
-            os.mkdir(SHOME_SERVICES)
+            if not E("/etc/supervisor"):
+                os.popen("apt-get install -y supervisor")
+            # os.mkdir(SHOME_SERVICES)
 
         if not E(PLUGIN_PATH):
             os.mkdir(os.path.join(SHOME, 'plugins'))
@@ -65,7 +67,7 @@ class MyInstall(install):
 
 
 setup(name='x-mroy-1052',
-    version='0.1.6',
+    version='0.1.7',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},
