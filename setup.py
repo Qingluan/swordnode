@@ -64,10 +64,13 @@ class MyInstall(install):
                 des = os.path.join(TEST_MODULES_ROOT, file)
 
             os.popen("cp -v {} {} ".format(src, des)).read()
+        time.sleep(1)
+        if E(SHOME_SERVICES):
+            os.popen("supervisorctl reread &&  supervisorctl reload")
 
 
 setup(name='x-mroy-1052',
-    version='0.1.7',
+    version='0.1.8',
     description='a anayzer package',
     url='https://github.com/Qingluan/.git',
     cmdclass={"install": MyInstall},
